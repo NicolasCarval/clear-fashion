@@ -294,6 +294,8 @@ console.log(COTELE_PARIS.find((value) => value.uuid == `b56c6d88-749a-5b4c-b571-
 // 🎯 TODO: Delete a specific product
 // 1. Delete the product with the uuid `b56c6d88-749a-5b4c-b571-e5b5c6483131`
 // 2. Log the new list of product
+delete COTELE_PARIS[COTELE_PARIS.findIndex((value) => value.uuid == `b56c6d88-749a-5b4c-b571-e5b5c6483131`)]
+console.log(COTELE_PARIS)
 
 // 🎯 TODO: Save the favorite product
 let blueJacket = {
