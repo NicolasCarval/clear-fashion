@@ -289,7 +289,7 @@ console.log(COTELE_PARIS.every((value) => value.price <= 100))
 // 🎯 TODO: Find a specific product
 // 1. Find the product with the uuid `b56c6d88-749a-5b4c-b571-e5b5c6483131`
 // 2. Log the product
-
+console.log(COTELE_PARIS.find((value) => value.uuid == `b56c6d88-749a-5b4c-b571-e5b5c6483131`))
 
 // 🎯 TODO: Delete a specific product
 // 1. Delete the product with the uuid `b56c6d88-749a-5b4c-b571-e5b5c6483131`
