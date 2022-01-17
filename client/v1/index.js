@@ -14,6 +14,7 @@ const MY_FAVORITE_BRANDS = [{
   'url': 'https://adresse.paris/'
 }];
 
+
 console.table(MY_FAVORITE_BRANDS);
 console.log(MY_FAVORITE_BRANDS[0]);
 
@@ -32,7 +33,8 @@ console.log(MY_FAVORITE_BRANDS[0]);
 // I can find on these e-shops
 // 2. Log the variable
 
-
+const CHEAPEST_SHIRT = { "cheapest tshirt": "https://www.loom.fr/products/le-t-shirt" };
+console.log(CHEAPEST_SHIRT);
 
 
 
