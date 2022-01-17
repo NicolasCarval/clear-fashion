@@ -312,6 +312,9 @@ jacket.favorite = true;
 
 // 1. Log `blueJacket` and `jacket` variables
 // 2. What do you notice?
+console.log("jacket:\n", jacket);
+console.log("bluejacket:\n", blueJacket);
+console.log("are equal :", jacket === blueJacket);
 
 blueJacket = {
   'link': 'https://coteleparis.com/collections/tous-les-produits-cotele/products/la-veste-bleu-roi',
@@ -321,9 +324,12 @@ blueJacket = {
 
 // 3. Update `jacket` property with `favorite` to true WITHOUT changing blueJacket properties
 
+jacket = Object.assign({}, blueJacket)
+jacket.favorite = true;
 
-
-
+console.log("jacket:\n", jacket);
+console.log("bluejacket:\n", blueJacket);
+console.log("are equal :", jacket === blueJacket);
 
 /**
  * 🎬
