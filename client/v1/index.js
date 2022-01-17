@@ -73,42 +73,30 @@ console.log(Brands.length);
 // 2. Create a variable and assign it the list of products by price from lowest to highest
 // 3. Log the variable
 function SortProductsPrice(market) {
-    let first = 0;
-    for (let i = 0; i < market.length; i++) {
-        for (let j = i + 1; j < market.length; j++) {            
-            if (market[j].price < market[i].price) {
-                first = market[i];
-                market[i] = market[j];
-                market[j] = first;
-            }
-        }
-    }
+    return market.slice().sort(function (itemA, itemB){
+        return itemA.price - itemB.price;
+    });
 }
 
-SortProductsPrice(marketplace);
-let ProductSortedPrice = marketplace.slice()
-console.log(ProductSortedPrice);
+let ProductSortedPrice = SortProductsPrice(marketplace);
+console.log("sorted by price:\n",ProductSortedPrice);
 
 // 🎯 TODO: Sort by date
 // 1. Create a function to sort the marketplace objects by products date
 // 2. Create a variable and assign it the list of products by date from recent to old
 // 3. Log the variable
 function SortProductsDate(market) {
-    let first = 0;
-    for (let i = 0; i < market.length; i++) {
-        for (let j = i + 1; j < market.length; j++) {
-            if (market[j].date < market[i].date) {
-                first = market[i];
-                market[i] = market[j];
-                market[j] = first;
-            }
-        }
-    }
+    return market.slice().sort(function (itemA, itemB){
+        if (itemA.date < itemB.date) { return -1; }
+        else if (itemA.date > itemB.date) { return 1; }
+        else { return 0;}
+    });
 }
 
-SortProductsDate(marketplace);
-let ProductSortedDate = marketplace.slice()
-console.log(ProductSortedDate);
+
+let ProductSortedDate = SortProductsDate(marketplace);
+console.log("sorted by date:\n", ProductSortedDate);
+console.log(marketplace)
 
 // 🎯 TODO: Filter a specific price range
 // 1. Filter the list of products between 50€ and 100€
@@ -119,7 +107,6 @@ console.log(marketplace.filter(x => x.price < 100 && x.price > 50))
 // 1. Determine the average basket of the marketplace
 // 2. Log the average
 const reducer = (previousProduct, NextProduct) => previousProduct+ NextProduct.price;
-
 console.log(marketplace.reduce(reducer, 0) / marketplace.length);
 
 
