@@ -284,7 +284,7 @@ console.log(COTELE_PARIS.every((value) => Date(value.released)<=ourDate))
 // 🎯 TODO: Reasonable price
 // // 1. Log if coteleparis is a reasonable price shop (true or false)
 // // A reasonable price if all the products are less than 100€
-
+console.log(COTELE_PARIS.every((value) => value.price <= 100))
 
 // 🎯 TODO: Find a specific product
 // 1. Find the product with the uuid `b56c6d88-749a-5b4c-b571-e5b5c6483131`
