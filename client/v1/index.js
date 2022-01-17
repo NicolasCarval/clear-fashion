@@ -1,6 +1,5 @@
 // Invoking strict mode https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode#invoking_strict_mode
 
-
 'use strict';
 console.log('🚀 This is it.');
 
@@ -181,7 +180,26 @@ console.log("products sorted by date for each brand:\n", brands_by_date);
 // 1. Compute the p90 price value of each brand
 // The p90 value (90th percentile) is the lower value expected to be exceeded in 90% of the products
 
+// I saw that p90 = 1.282*std = 1.282*sqrt(variance)
+let BrandsP90 = {}
+for (const key of Object.keys(brands)) {
+    console.log("current brand ",key)
+    let mean = brands[key].reduce(reducer, 0) / brands[key].length
+    console.log("mean ",mean)
+    let variance = 0;
+    for (let i = 0; i < brands[key].length; i++) {
+        variance += Math.pow((brands[key][i].price - mean), 2);
+    }
+    variance = variance / brands[key].length;
+    console.log("variance ", variance)
+    let std = Math.sqrt(variance);
+    console.log(std);
+    let p90 = 1.282 * std;
+    console.log("p90", p90)
+    BrandsP90[key] = p90;
+}
 
+console.log("P90 for each brands:\n", BrandsP90);
 
 
 
