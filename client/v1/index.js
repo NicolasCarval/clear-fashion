@@ -96,7 +96,6 @@ function SortProductsDate(market) {
 
 let ProductSortedDate = SortProductsDate(marketplace);
 console.log("sorted by date:\n", ProductSortedDate);
-console.log(marketplace)
 
 // 🎯 TODO: Filter a specific price range
 // 1. Filter the list of products between 50€ and 100€
@@ -134,18 +133,40 @@ console.log(marketplace.reduce(reducer, 0) / marketplace.length);
 //
 // 2. Log the variable
 // 3. Log the number of products by brands
-
+function GetProductsByBrand() {
+    let brands = {};
+    for (let i = 0; i < marketplace.length; i++) {
+        if (marketplace[i].brand in brands) {
+            brands[marketplace[i].brand].push(marketplace[i]);
+        }
+        else {
+            brands[marketplace[i].brand] = [marketplace[i]];
+        }
+        delete brands[marketplace[i].brand][brands[marketplace[i].brand].length-1].brand;
+    }
+    return brands;
+}
+const brands = GetProductsByBrand();
+console.log("products by brands\n", brands);
 
 // 🎯 TODO: Sort by price for each brand
 // 1. For each brand, sort the products by price, from highest to lowest
 // 2. Log the sort
-
+const brands_by_price = Object.assign({},brands);
+for (const key of Object.keys(brands_by_price)) {
+    brands_by_price[key] = SortProductsPrice(brands[key]);
+}
+console.log("products sorted by price for each brand:\n", brands_by_price);
 
 // 🎯 TODO: Sort by date for each brand
 // 1. For each brand, sort the products by date, from old to recent
 // 2. Log the sort
 
-
+const brands_by_date = Object.assign({},brands);
+for (const key of Object.keys(brands_by_date)) {
+    brands_by_date[key] = SortProductsDate(brands[key]);
+}
+console.log("products sorted by date for each brand:\n", brands_by_date);
 
 
 
