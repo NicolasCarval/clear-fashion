@@ -1,6 +1,7 @@
 // Invoking strict mode https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode#invoking_strict_mode
-'use strict';
 
+
+'use strict';
 console.log('🚀 This is it.');
 
 const MY_FAVORITE_BRANDS = [{
@@ -51,6 +52,8 @@ console.log(CHEAPEST_SHIRT);
 // 1. Create a variable and assign it the number of products
 // 2. Log the variable
 
+const nb_product = marketplace.length;
+console.log(nb_product);
 
 // 🎯 TODO: Brands name
 // 1. Create a variable and assign it the list of brands name only

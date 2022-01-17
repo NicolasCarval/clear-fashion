@@ -1,7 +1,7 @@
 /* eslint-disable */
 'use strict';
 
-const marketplace = [
+  const marketplace = [
   {
     'brand': 'adresse',
     'link':
@@ -1087,3 +1087,4 @@ const marketplace = [
     'date': '2020-08-25'
   }
 ];
+
