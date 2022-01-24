@@ -101,8 +101,8 @@ console.log("sorted by date:\n", ProductSortedDate);
 // 2. Log the list
 console.log(marketplace.filter(x => x.price < 100 && x.price > 50))
 
-// 🎯 TODO: Average Basket
-// 1. Determine the average basket of the marketplace
+// 🎯 TODO: Average price
+// 1. Determine the average price of the marketplace
 // 2. Log the average
 const reducer = (previousProduct, NextProduct) => previousProduct+ NextProduct.price;
 console.log(marketplace.reduce(reducer, 0) / marketplace.length);
