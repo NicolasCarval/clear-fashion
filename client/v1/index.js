@@ -182,6 +182,7 @@ console.log("products sorted by date for each brand:\n", brands_by_date);
 
 // I saw that p90 = 1.282*std = 1.282*sqrt(variance)
 let BrandsP90 = {}
+
 for (const key of Object.keys(brands)) {
     console.log("current brand ",key)
     let mean = brands[key].reduce(reducer, 0) / brands[key].length
@@ -200,8 +201,16 @@ for (const key of Object.keys(brands)) {
 }
 
 console.log("P90 for each brands:\n", BrandsP90);
+/*
+for (const key of Object.keys(brands_by_price)) {
+    brands_by_price[key] = SortProductsPrice(brands[key]);
 
-
+    let productIndex = Math.round(brands_by_price[key].length * (1 - 0.9))
+    if (productIndex - 1 >= 0) { productIndex --}
+    BrandsP90[key] = brands_by_price[key][productIndex].price
+}
+console.log("P90 for each brands:\n", BrandsP90);
+*/
 
 /**
  * 🧥
