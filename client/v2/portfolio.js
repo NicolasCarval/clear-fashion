@@ -112,11 +112,11 @@ const renderIndicators = pagination => {
     
     fetchProducts(1, count).then(product => {
         const productSortedDate = SortProductsDate(product.result);
-        console.log(productSortedDate)
-        spanDateLatestProduct.innerHTML = productSortedDate[productSortedDate.length-1].released;
+        spanDateLatestProduct.innerHTML = productSortedDate[0].released;
+
+        const nbRecentlyReleased = CountRecentlyReleased(productSortedDate);
+        spanNbNewProducts.innerHTML = nbRecentlyReleased;        
     });
-
-
 };
 
 const render = (products, pagination) => {
@@ -196,16 +196,19 @@ function GetProductsByBrand(brandName) {
 
 function SortProductsDate(ProductsList) {
     return ProductsList.slice().sort(function (itemA, itemB) {
-        if (itemA.released < itemB.released) { return -1; }
-        else if (itemA.released > itemB.released) { return 1; }
+        if (itemA.released > itemB.released) { return -1; }
+        else if (itemA.released < itemB.released) { return 1; }
         else { return 0; }
     });
 }
 
 function CountRecentlyReleased(ProductList) {
-    var ourDate = new Date();
-    var pastDate = ourDate.getDate() - 14;
-    ourDate.setDate(pastDate);
-
-    console.log(COTELE_PARIS.every((value) => Date(value.released) <= ourDate))
+    let counter = 0;
+    const recentDate = new Date()
+    const pastDate = recentDate.getDate() - 14;
+    recentDate.setDate(pastDate);
+    while (new Date(ProductList[counter].released) >= recentDate) {
+        counter=counter+1;
+    }
+    return counter;
 }
