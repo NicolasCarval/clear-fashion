@@ -25,7 +25,7 @@ const setCurrentProducts = ({ result, meta }) => {
     currentPagination = meta;
     if (selectBrand.value != "all") {
         currentProducts = GetProductsByBrand(selectBrand.value);
-    }    
+    }
 };
 
 /**
@@ -35,22 +35,22 @@ const setCurrentProducts = ({ result, meta }) => {
  * @return {Object}
  */
 const fetchProducts = async (page = 1, size = 12) => {
-  try {
-    const response = await fetch(
-      `https://clear-fashion-api.vercel.app?page=${page}&size=${size}`
-    );
-    const body = await response.json();
+    try {
+        const response = await fetch(
+            `https://clear-fashion-api.vercel.app?page=${page}&size=${size}`
+        );
+        const body = await response.json();
 
-    if (body.success !== true) {
-      console.error(body);
-      return {currentProducts, currentPagination};
+        if (body.success !== true) {
+            console.error(body);
+            return { currentProducts, currentPagination };
+        }
+        console.log(body.data);
+        return body.data;
+    } catch (error) {
+        console.error(error);
+        return { currentProducts, currentPagination };
     }
-    console.log(body.data);
-    return body.data;
-  } catch (error) {
-    console.error(error);
-    return {currentProducts, currentPagination};
-  }
 };
 
 /**
@@ -84,7 +84,7 @@ const renderProducts = products => {
         sectionProducts.innerHTML = '<h2>Products</h2>';
         sectionProducts.appendChild(fragment);
     }
-  
+
 };
 
 /**
@@ -92,14 +92,14 @@ const renderProducts = products => {
  * @param  {Object} pagination
  */
 const renderPagination = pagination => {
-  const {currentPage, pageCount} = pagination;
-  const options = Array.from(
-    {'length': pageCount},
-    (value, index) => `<option value="${index + 1}">${index + 1}</option>`
-  ).join('');
+    const { currentPage, pageCount } = pagination;
+    const options = Array.from(
+        { 'length': pageCount },
+        (value, index) => `<option value="${index + 1}">${index + 1}</option>`
+    ).join('');
 
-  selectPage.innerHTML = options;
-  selectPage.selectedIndex = currentPage - 1;
+    selectPage.innerHTML = options;
+    selectPage.selectedIndex = currentPage - 1;
 };
 
 /**
@@ -107,22 +107,22 @@ const renderPagination = pagination => {
  * @param  {Object} pagination
  */
 const renderIndicators = pagination => {
-  const {count} = pagination;
+    const { count } = pagination;
     spanNbProducts.innerHTML = count;
-    
+
     fetchProducts(1, count).then(product => {
         const productSortedDate = SortProductsDate(product.result);
         spanDateLatestProduct.innerHTML = productSortedDate[0].released;
 
         const nbRecentlyReleased = CountRecentlyReleased(productSortedDate);
-        spanNbNewProducts.innerHTML = nbRecentlyReleased;        
+        spanNbNewProducts.innerHTML = nbRecentlyReleased;
     });
 };
 
 const render = (products, pagination) => {
-  renderProducts(products);
-  renderPagination(pagination);
-  renderIndicators(pagination);
+    renderProducts(products);
+    renderPagination(pagination);
+    renderIndicators(pagination);
 };
 
 /**
@@ -138,9 +138,9 @@ selectShow.addEventListener('change', event => {
     if (newPage > parseInt(spanNbProducts.innerHTML) / parseInt(event.target.value)) {
         newPage = Math.ceil(parseInt(spanNbProducts.innerHTML) / parseInt(event.target.value))
     }
-  fetchProducts(newPage, parseInt(event.target.value))
-    .then(setCurrentProducts)
-    .then(() => render(currentProducts, currentPagination));
+    fetchProducts(newPage, parseInt(event.target.value))
+        .then(setCurrentProducts)
+        .then(() => render(currentProducts, currentPagination));
 });
 
 /**
@@ -148,7 +148,7 @@ selectShow.addEventListener('change', event => {
  * @type {[type]}
  */
 selectPage.addEventListener('change', event => {
-    
+
     fetchProducts(parseInt(event.target.value), selectShow.value)
         .then(setCurrentProducts)
         .then(() => render(currentProducts, currentPagination));
@@ -172,11 +172,12 @@ selectBrand.addEventListener('change', event => {
 
 
 document.addEventListener('DOMContentLoaded', async () => {
-    //here we could find all brands once, and create the options in html
+    //here we could find all brands once, and create the options in html    
     const products = await fetchProducts(currentPagination.currentPage, selectShow.value);
+    fetchProducts(1, products.meta.count).then(BrandSelectOptionCreation);
 
-  setCurrentProducts(products);
-  render(currentProducts, currentPagination);
+    setCurrentProducts(products);
+    render(currentProducts, currentPagination);
 });
 
 
@@ -187,8 +188,8 @@ function GetProductsByBrand(brandName) {
     let brandProducts = [];
     for (let i = 0; i < currentProducts.length; i++) {
         if (currentProducts[i].brand == brandName) {
-            brandProducts.push(currentProducts[i]);            
-        }        
+            brandProducts.push(currentProducts[i]);
+        }
     }
     console.log(brandProducts);
     return brandProducts;
@@ -208,7 +209,20 @@ function CountRecentlyReleased(ProductList) {
     const pastDate = recentDate.getDate() - 14;
     recentDate.setDate(pastDate);
     while (new Date(ProductList[counter].released) >= recentDate) {
-        counter=counter+1;
+        counter = counter + 1;
     }
     return counter;
+}
+
+function BrandSelectOptionCreation(allProducts) {
+    let Brands = []
+    for (let i = 0; i < allProducts.result.length; i++) {
+        if (!Brands.includes(allProducts.result[i].brand)) {
+            Brands.push(allProducts.result[i].brand);
+            const el = document.createElement("option");
+            el.innerHTML = allProducts.result[i].brand
+            el.value = allProducts.result[i].brand
+            selectBrand.appendChild(el)
+        }
+    }
 }
