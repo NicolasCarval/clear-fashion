@@ -17,8 +17,8 @@ const spanNbProducts = document.querySelector('#nbProducts');
  * @param {Object} meta - pagination meta info
  */
 const setCurrentProducts = ({result, meta}) => {
-  currentProducts = result;
-  currentPagination = meta;
+    currentProducts = result;
+    currentPagination = meta;
 };
 
 /**
@@ -38,7 +38,7 @@ const fetchProducts = async (page = 1, size = 12) => {
       console.error(body);
       return {currentProducts, currentPagination};
     }
-
+    console.log(body.data);
     return body.data;
   } catch (error) {
     console.error(error);
@@ -107,13 +107,28 @@ const render = (products, pagination) => {
  */
 
 /**
- * Select the number of products to display
+ * Select the number of products to display, will update current page if necessary
  * @type {[type]}
  */
 selectShow.addEventListener('change', event => {
-  fetchProducts(currentPagination.currentPage, parseInt(event.target.value))
+    let newPage = currentPagination.currentPage
+    if (newPage > parseInt(spanNbProducts.innerHTML) / parseInt(event.target.value)) {
+        newPage = Math.ceil(parseInt(spanNbProducts.innerHTML) / parseInt(event.target.value))
+    }
+  fetchProducts(newPage, parseInt(event.target.value))
     .then(setCurrentProducts)
     .then(() => render(currentProducts, currentPagination));
+});
+
+/**
+ * Select the page of products to display
+ * @type {[type]}
+ */
+selectPage.addEventListener('change', event => {
+    
+    fetchProducts(parseInt(event.target.value), selectShow.value)
+        .then(setCurrentProducts)
+        .then(() => render(currentProducts, currentPagination));
 });
 
 document.addEventListener('DOMContentLoaded', async () => {
