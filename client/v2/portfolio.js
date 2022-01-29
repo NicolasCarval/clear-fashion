@@ -8,9 +8,12 @@ let currentPagination = {};
 // instantiate the selectors
 const selectShow = document.querySelector('#show-select');
 const selectPage = document.querySelector('#page-select');
+const selectBrand = document.querySelector('#brand-select');
 const sectionProducts = document.querySelector('#products');
 const spanNbProducts = document.querySelector('#nbProducts');
-const selectBrand = document.querySelector('#brand-select');
+const spanNbNewProducts = document.querySelector('#nbNewProducts');
+const spanDateLatestProduct = document.querySelector('#DateLatestProduct');
+
 
 /**
  * Set global value
@@ -105,8 +108,15 @@ const renderPagination = pagination => {
  */
 const renderIndicators = pagination => {
   const {count} = pagination;
+    spanNbProducts.innerHTML = count;
+    
+    fetchProducts(1, count).then(product => {
+        const productSortedDate = SortProductsDate(product.result);
+        console.log(productSortedDate)
+        spanDateLatestProduct.innerHTML = productSortedDate[productSortedDate.length-1].released;
+    });
 
-  spanNbProducts.innerHTML = count;
+
 };
 
 const render = (products, pagination) => {
@@ -162,6 +172,7 @@ selectBrand.addEventListener('change', event => {
 
 
 document.addEventListener('DOMContentLoaded', async () => {
+    //here we could find all brands once, and create the options in html
     const products = await fetchProducts(currentPagination.currentPage, selectShow.value);
 
   setCurrentProducts(products);
@@ -170,6 +181,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
 //Declaration of all additional functions
+
+
 function GetProductsByBrand(brandName) {
     let brandProducts = [];
     for (let i = 0; i < currentProducts.length; i++) {
@@ -179,4 +192,20 @@ function GetProductsByBrand(brandName) {
     }
     console.log(brandProducts);
     return brandProducts;
+}
+
+function SortProductsDate(ProductsList) {
+    return ProductsList.slice().sort(function (itemA, itemB) {
+        if (itemA.released < itemB.released) { return -1; }
+        else if (itemA.released > itemB.released) { return 1; }
+        else { return 0; }
+    });
+}
+
+function CountRecentlyReleased(ProductList) {
+    var ourDate = new Date();
+    var pastDate = ourDate.getDate() - 14;
+    ourDate.setDate(pastDate);
+
+    console.log(COTELE_PARIS.every((value) => Date(value.released) <= ourDate))
 }
