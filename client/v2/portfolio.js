@@ -9,10 +9,15 @@ let currentPagination = {};
 const selectShow = document.querySelector('#show-select');
 const selectPage = document.querySelector('#page-select');
 const selectBrand = document.querySelector('#brand-select');
+
 const sectionProducts = document.querySelector('#products');
+
 const spanNbProducts = document.querySelector('#nbProducts');
 const spanNbNewProducts = document.querySelector('#nbNewProducts');
 const spanDateLatestProduct = document.querySelector('#DateLatestProduct');
+const span50 = document.querySelector('#P50');
+const span90 = document.querySelector('#P90');
+const span95 = document.querySelector('#P95');
 
 
 /**
@@ -116,6 +121,11 @@ const renderIndicators = pagination => {
 
         const nbRecentlyReleased = CountRecentlyReleased(productSortedDate);
         spanNbNewProducts.innerHTML = nbRecentlyReleased;
+
+        const { p50, p90, p95 } = pValueCalculator(productSortedDate);
+        span50.innerHTML = p50;
+        span90.innerHTML = p90;
+        span95.innerHTML = p95;
     });
 };
 
@@ -225,4 +235,24 @@ function BrandSelectOptionCreation(allProducts) {
             selectBrand.appendChild(el)
         }
     }
+}
+
+function pValueCalculator(listOfProducts) {
+    
+    const reducer = (previousProduct, NextProduct) => previousProduct + NextProduct.price;
+    const mean = listOfProducts.reduce(reducer, 0) / listOfProducts.length;
+    let variance = 0.0;
+    for (let i = 0; i < listOfProducts.length; i++) {
+        variance += Math.pow((listOfProducts[i].price - mean), 2);
+    }
+    variance = variance / listOfProducts.length;
+    const standardDeviation = Math.sqrt(variance);
+
+    const p50 = (mean - 0.0 * standardDeviation).toFixed(2);
+    const p90 = (mean + 1.282 * standardDeviation).toFixed(2);
+    const p95 = (mean + 1.645 * standardDeviation).toFixed(2);
+    console.log("mean", mean)
+    console.log("variance", variance)
+    console.log("std", standardDeviation)
+    return { p50, p90, p95 };
 }
