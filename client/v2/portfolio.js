@@ -9,6 +9,7 @@ let currentPagination = {};
 const selectShow = document.querySelector('#show-select');
 const selectPage = document.querySelector('#page-select');
 const selectBrand = document.querySelector('#brand-select');
+const selectSort = document.querySelector('#sort-select');
 
 const sectionProducts = document.querySelector('#products');
 
@@ -50,7 +51,6 @@ const fetchProducts = async (page = 1, size = 12) => {
             console.error(body);
             return { currentProducts, currentPagination };
         }
-        console.log(body.data);
         return body.data;
     } catch (error) {
         console.error(error);
@@ -63,6 +63,7 @@ const fetchProducts = async (page = 1, size = 12) => {
  * @param  {Array} products
  */
 const renderProducts = products => {
+    products = sortBy(products);
     const fragment = document.createDocumentFragment();
     if (products.length != 0) {
         const div = document.createElement('div');
@@ -73,6 +74,7 @@ const renderProducts = products => {
         <span>${product.brand}</span>
         <a href="${product.link}" target="_blank">${product.name}</a>
         <span>${product.price}</span>
+        <span>${product.released}</span>
       </div>
     `;
             })
@@ -179,6 +181,11 @@ selectBrand.addEventListener('change', event => {
     }
 });
 
+selectSort.addEventListener('change', event => {
+    fetchProducts(currentPagination.currentPage, selectShow.value)
+        .then(setCurrentProducts)
+        .then(() => render(currentProducts, currentPagination));
+})
 
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -201,7 +208,6 @@ function GetProductsByBrand(brandName) {
             brandProducts.push(currentProducts[i]);
         }
     }
-    console.log(brandProducts);
     return brandProducts;
 }
 
@@ -209,6 +215,14 @@ function SortProductsDate(ProductsList) {
     return ProductsList.slice().sort(function (itemA, itemB) {
         if (itemA.released > itemB.released) { return -1; }
         else if (itemA.released < itemB.released) { return 1; }
+        else { return 0; }
+    });
+}
+
+function SortProductsPrice(ProductsList) {
+    return ProductsList.slice().sort(function (itemA, itemB) {
+        if (itemA.price > itemB.price) { return -1; }
+        else if (itemA.price < itemB.price) { return 1; }
         else { return 0; }
     });
 }
@@ -251,8 +265,21 @@ function pValueCalculator(listOfProducts) {
     const p50 = (mean - 0.0 * standardDeviation).toFixed(2);
     const p90 = (mean + 1.282 * standardDeviation).toFixed(2);
     const p95 = (mean + 1.645 * standardDeviation).toFixed(2);
-    console.log("mean", mean)
-    console.log("variance", variance)
-    console.log("std", standardDeviation)
     return { p50, p90, p95 };
+}
+
+function sortBy(products) {
+    let sortedProduct = [];
+    if (selectSort.value == "date-asc") {
+        sortedProduct = SortProductsDate(products);
+        sortedProduct.reverse();
+    } else if (selectSort.value == "date-desc") {
+        sortedProduct = SortProductsDate(products);        
+    } else if (selectSort.value == "price-asc") {
+        sortedProduct = SortProductsPrice(products);
+        sortedProduct.reverse();
+    } else {
+        sortedProduct = SortProductsPrice(products);
+    }
+    return sortedProduct;
 }
