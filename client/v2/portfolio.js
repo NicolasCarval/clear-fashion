@@ -28,10 +28,7 @@ const span95 = document.querySelector('#P95');
  */
 const setCurrentProducts = ({ result, meta }) => {
     currentProducts = result;
-    currentPagination = meta;
-    if (selectBrand.value != "all") {
-        currentProducts = GetProductsByBrand(selectBrand.value);
-    }
+    currentPagination = meta;    
 };
 
 /**
@@ -62,7 +59,10 @@ const fetchProducts = async (page = 1, size = 12) => {
  * Render list of products
  * @param  {Array} products
  */
-const renderProducts = products => {
+const renderProducts = products => {    
+    if (selectBrand.value != "all") {
+        products = GetProductsByBrand(selectBrand.value);
+    }
     products = sortBy(products);
     const fragment = document.createDocumentFragment();
     if (products.length != 0) {
