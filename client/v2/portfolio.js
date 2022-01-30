@@ -10,6 +10,12 @@ const selectShow = document.querySelector('#show-select');
 const selectPage = document.querySelector('#page-select');
 const selectBrand = document.querySelector('#brand-select');
 const selectSort = document.querySelector('#sort-select');
+const selectRecent = document.querySelector('#recent-select');
+const selectPrice = document.querySelector('#price-select');
+
+const selectPriceValue = document.querySelectorAll('input[name="priceRadio"]');
+
+
 
 const sectionProducts = document.querySelector('#products');
 
@@ -63,6 +69,18 @@ const renderProducts = products => {
     if (selectBrand.value != "all") {
         products = GetProductsByBrand(selectBrand.value);
     }
+    if (selectRecent.checked) {
+        products = SortProductsDate(products)
+        products = products.slice(0, CountRecentlyReleased(products))
+    }
+    if (selectPrice.checked) {
+        for (let index = 0; index < selectPriceValue.length; index++) {
+            if (selectPriceValue[index].checked) {
+                const priceLimit = parseInt(selectPriceValue[index].value);
+                products = products.filter(elements => elements.price <= priceLimit);
+            }
+        }
+    }
     products = sortBy(products);
     const fragment = document.createDocumentFragment();
     if (products.length != 0) {
@@ -74,7 +92,6 @@ const renderProducts = products => {
         <span>${product.brand}</span>
         <a href="${product.link}" target="_blank">${product.name}</a>
         <span>${product.price}</span>
-        <span>${product.released}</span>
       </div>
     `;
             })
@@ -187,9 +204,26 @@ selectSort.addEventListener('change', event => {
         .then(() => render(currentProducts, currentPagination));
 })
 
+selectRecent.addEventListener('change', event => {
+    fetchProducts(currentPagination.currentPage, selectShow.value)
+        .then(setCurrentProducts)
+        .then(() => render(currentProducts, currentPagination));
+})
+
+selectPrice.addEventListener('change', event => {
+    fetchProducts(currentPagination.currentPage, selectShow.value)
+        .then(setCurrentProducts)
+        .then(() => render(currentProducts, currentPagination));
+})
+
+async function RadioOnclick() {
+    fetchProducts(currentPagination.currentPage, selectShow.value)
+        .then(setCurrentProducts)
+        .then(() => render(currentProducts, currentPagination));
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
-    //here we could find all brands once, and create the options in html    
+        
     const products = await fetchProducts(currentPagination.currentPage, selectShow.value);
     fetchProducts(1, products.meta.count).then(BrandSelectOptionCreation);
 
@@ -252,7 +286,7 @@ function BrandSelectOptionCreation(allProducts) {
 }
 
 function pValueCalculator(listOfProducts) {
-    
+    displayPriceRange();
     const reducer = (previousProduct, NextProduct) => previousProduct + NextProduct.price;
     const mean = listOfProducts.reduce(reducer, 0) / listOfProducts.length;
     let variance = 0.0;
@@ -282,4 +316,14 @@ function sortBy(products) {
         sortedProduct = SortProductsPrice(products);
     }
     return sortedProduct;
+}
+
+function displayPriceRange() {
+    const showDiv = document.getElementById("PriceRange");
+    if (selectPrice.checked) {
+        showDiv.style.display = "";
+    }
+    else {
+        showDiv.style.display = "none";
+    }    
 }

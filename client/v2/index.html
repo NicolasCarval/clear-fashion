@@ -20,16 +20,39 @@
         <select name="page" id="page-select"> </select>
       </div>
       <div id="filters">
-        <span>By reasonable price</span>
-        <span>By recently released</span>
-        <div id="brand">
-          <label for="brand-select">By brands:</label>
-          <select name="brand" id="brand-select">
-              <!-- could be computed by retrieving all brands from db-->
-              <option value="all" selected>--all brands--</option>
-              
-          </select>
-        </div>
+          <div id="release">
+              <label for="price-select">filter by price:</label>
+              <input type="checkbox" id="price-select" name="price" value="true" onclick="displayPriceRange()">
+
+              <div id="PriceRange" style="display:none;">
+                  <div>
+                      <input type="radio" id="price50" name="priceRadio" value="50" onclick="RadioOnclick()" checked>
+                      <label for="price50">50</label>
+                  </div>
+
+                  <div>
+                      <input type="radio" id="price75" name="priceRadio" value="75" onclick="RadioOnclick()">
+                      <label for="price75">75</label>
+                  </div>
+
+                  <div>
+                      <input type="radio" id="price100" name="priceRadio" value="100" onclick="RadioOnclick()">
+                      <label for="price100">100</label>
+                  </div>
+              </div>              
+          </div>
+
+          <div id="release">
+              <label for="recent-select">Recent products only:</label>
+              <input type="checkbox" id="recent-select" name="recent" value="true">
+          </div>
+          <div id="brand">
+              <label for="brand-select">By brands:</label>
+              <select name="brand" id="brand-select">
+                  <option value="all" selected>--all brands--</option>
+
+              </select>
+          </div>
       </div>
       <div id="sort">
         <label for="sort-select">Sort:</label>
