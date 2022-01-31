@@ -1,6 +1,9 @@
 // Invoking strict mode https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode#invoking_strict_mode
 'use strict';
 
+//temp fav
+const MY_FAVORITE_BRANDS = [];
+
 // current products on the page
 let currentProducts = [];
 let currentPagination = {};
@@ -12,10 +15,7 @@ const selectBrand = document.querySelector('#brand-select');
 const selectSort = document.querySelector('#sort-select');
 const selectRecent = document.querySelector('#recent-select');
 const selectPrice = document.querySelector('#price-select');
-
 const selectPriceValue = document.querySelectorAll('input[name="priceRadio"]');
-
-
 
 const sectionProducts = document.querySelector('#products');
 
@@ -82,6 +82,7 @@ const renderProducts = products => {
         }
     }
     products = sortBy(products);
+    console.log(products)
     const fragment = document.createDocumentFragment();
     if (products.length != 0) {
         const div = document.createElement('div');
@@ -92,6 +93,7 @@ const renderProducts = products => {
         <span>${product.brand}</span>
         <a href="${product.link}" target="_blank">${product.name}</a>
         <span>${product.price}</span>
+        <input type="button" id="fav${product.uuid}" value="Add" onclick="manageFavourite('${product.uuid}')">
       </div>
     `;
             })
@@ -101,6 +103,8 @@ const renderProducts = products => {
         fragment.appendChild(div);
         sectionProducts.innerHTML = '<h2>Products</h2>';
         sectionProducts.appendChild(fragment);
+        changeValue(products);
+
     } else {
         const div = document.createElement('div');
         div.innerHTML = `<p><strong>No current products on this page under these conditions</strong></p>`;
@@ -326,4 +330,39 @@ function displayPriceRange() {
     else {
         showDiv.style.display = "none";
     }    
+}
+
+function manageFavourite(id) {
+    const div = document.querySelector("[id=" + CSS.escape(id) + "]");
+    const favourites = JSON.parse(localStorage.getItem('favourites') || '[]');
+    let newFavourite = favourites.find(product => product.uuid == div.id);
+    if (newFavourite === undefined) {
+        div.querySelector(`#fav${id}`).value = "Remove";
+        newFavourite = currentProducts.find(product => product.uuid == div.id);
+        favourites.push(newFavourite);
+        localStorage.setItem('favourites', JSON.stringify(favourites));
+        console.log("push:",localStorage.favourites);
+    }
+    else {
+        div.querySelector(`#fav${id}`).value = "Add";
+        newFavourite = currentProducts.find(product => product.uuid == div.id);
+        const index = favourites.findIndex(product => product.uuid == newFavourite.uuid);
+        if (index > -1) {
+            favourites.splice(index, 1); // 2nd parameter means remove one item only
+        }
+        localStorage.setItem('favourites', JSON.stringify(favourites));
+    }
+}
+
+function changeValue(products) {
+    const favourites = JSON.parse(localStorage.getItem('favourites') || '[]');
+    for (let i = 0; i < products.length; i++) {
+        const div = document.querySelector("[id=" + CSS.escape(products[i].uuid) + "]");   
+        const newFavourite = favourites.find(product => product.uuid == div.id);
+        if (newFavourite !== undefined) {
+            div.querySelector("[id=fav" + CSS.escape(products[i].uuid) + "]").value = "Remove";
+        }
+
+    }
+    
 }
