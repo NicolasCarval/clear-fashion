@@ -14,6 +14,7 @@ const selectPage = document.querySelector('#page-select');
 const selectBrand = document.querySelector('#brand-select');
 const selectSort = document.querySelector('#sort-select');
 const selectRecent = document.querySelector('#recent-select');
+const selectFavourite = document.querySelector('#favourite-select');
 const selectPrice = document.querySelector('#price-select');
 const selectPriceValue = document.querySelectorAll('input[name="priceRadio"]');
 
@@ -34,7 +35,8 @@ const span95 = document.querySelector('#P95');
  */
 const setCurrentProducts = ({ result, meta }) => {
     currentProducts = result;
-    currentPagination = meta;    
+    currentPagination = meta;
+    console.log(currentPagination);
 };
 
 /**
@@ -65,9 +67,12 @@ const fetchProducts = async (page = 1, size = 12) => {
  * Render list of products
  * @param  {Array} products
  */
-const renderProducts = products => {    
+const renderProducts = products => {
+    if (selectFavourite.checked) {
+        products = JSON.parse(localStorage.getItem('favourites') || '[]');
+    }
     if (selectBrand.value != "all") {
-        products = GetProductsByBrand(selectBrand.value);
+        products = GetProductsByBrand(selectBrand.value, products);
     }
     if (selectRecent.checked) {
         products = SortProductsDate(products)
@@ -193,13 +198,18 @@ selectPage.addEventListener('change', event => {
  * @type {[type]}
  */
 selectBrand.addEventListener('change', event => {
+
+    fetchProducts(currentPagination.currentPage, selectShow.value)
+        .then(setCurrentProducts)
+        .then(() => render(currentProducts, currentPagination));
+    /*
     if (event.target.value != "all") {
-        renderProducts(GetProductsByBrand(event.target.value))
+        renderProducts(GetProductsByBrand(event.target.value,))
     } else {
         fetchProducts(currentPagination.currentPage, selectShow.value)
             .then(setCurrentProducts)
             .then(() => render(currentProducts, currentPagination));
-    }
+    }*/
 });
 
 selectSort.addEventListener('change', event => {
@@ -212,6 +222,20 @@ selectRecent.addEventListener('change', event => {
     fetchProducts(currentPagination.currentPage, selectShow.value)
         .then(setCurrentProducts)
         .then(() => render(currentProducts, currentPagination));
+})
+
+selectFavourite.addEventListener('click', event => {
+
+    if (event.target.checked) {
+        const result = JSON.parse(localStorage.getItem('favourites') || '[]');
+        const meta = Object.assign({}, currentPagination);
+        setCurrentProducts({ result, meta });
+        render(currentProducts, currentPagination);
+    } else {
+        fetchProducts(currentPagination.currentPage, selectShow.value)
+            .then(setCurrentProducts)
+            .then(() => render(currentProducts, currentPagination));
+    }
 })
 
 selectPrice.addEventListener('change', event => {
@@ -239,11 +263,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 //Declaration of all additional functions
 
 
-function GetProductsByBrand(brandName) {
+function GetProductsByBrand(brandName,products) {
     let brandProducts = [];
-    for (let i = 0; i < currentProducts.length; i++) {
-        if (currentProducts[i].brand == brandName) {
-            brandProducts.push(currentProducts[i]);
+    for (let i = 0; i < products.length; i++) {
+        if (products[i].brand == brandName) {
+            brandProducts.push(products[i]);
         }
     }
     return brandProducts;
@@ -350,8 +374,12 @@ function manageFavourite(id) {
         if (index > -1) {
             favourites.splice(index, 1); // 2nd parameter means remove one item only
         }
-        localStorage.setItem('favourites', JSON.stringify(favourites));
+        localStorage.setItem('favourites', JSON.stringify(favourites));        
     }
+    if (selectFavourite.checked) {
+        render(currentProducts, currentPagination);
+    }
+     
 }
 
 function changeValue(products) {
