@@ -64,6 +64,29 @@ const fetchProducts = async (page = 1, size = 12) => {
 };
 
 /**
+ * Fetch brands from api
+ * @return {Object}
+ */
+const fetchBrands = async () => {
+    try {
+        const response = await fetch(
+            `https://clear-fashion-api.vercel.app/brands`
+        );
+        const body = await response.json();
+
+        if (body.success !== true) {
+            console.error(body);
+            return { result:["loom","dedicated","adresse","1083"] };
+        }
+        console.log("yes")
+        return body.data;
+    } catch (error) {
+        console.error(error);
+        return { result: ["loom", "dedicated", "adresse", "1083"] };
+    }
+};
+
+/**
  * Render list of products
  * @param  {Array} products
  */
@@ -253,7 +276,7 @@ async function RadioOnclick() {
 document.addEventListener('DOMContentLoaded', async () => {
         
     const products = await fetchProducts(currentPagination.currentPage, selectShow.value);
-    fetchProducts(1, products.meta.count).then(BrandSelectOptionCreation);
+    fetchBrands().then(BrandSelectOptionCreation);
 
     setCurrentProducts(products);
     render(currentProducts, currentPagination);
@@ -300,7 +323,15 @@ function CountRecentlyReleased(ProductList) {
     return counter;
 }
 
-function BrandSelectOptionCreation(allProducts) {
+function BrandSelectOptionCreation({ result }) {
+    const brands = result
+    for (let i = 0; i < brands.length; i++) {
+        const el = document.createElement("option");
+        el.innerHTML = brands[i]
+        el.value = brands[i]
+        selectBrand.appendChild(el)        
+    }
+    /*
     let Brands = []
     for (let i = 0; i < allProducts.result.length; i++) {
         if (!Brands.includes(allProducts.result[i].brand)) {
@@ -310,7 +341,7 @@ function BrandSelectOptionCreation(allProducts) {
             el.value = allProducts.result[i].brand
             selectBrand.appendChild(el)
         }
-    }
+    }*/
 }
 
 function pValueCalculator(listOfProducts) {
