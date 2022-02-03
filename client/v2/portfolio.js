@@ -114,10 +114,11 @@ const renderProducts = products => {
     const fragment = document.createDocumentFragment();
     if (products.length != 0) {
         const div = document.createElement('div');
+        div.className = "flex-container"
         const template = products
             .map(product => {
                 return `
-      <div class="product" id=${product.uuid}>
+      <div class="product" id=${product.uuid}>              
         <span>${product.brand}</span>
         <a href="${product.link}" target="_blank">${product.name}</a>
         <span>${product.price}</span>
@@ -129,7 +130,7 @@ const renderProducts = products => {
 
         div.innerHTML = template;
         fragment.appendChild(div);
-        sectionProducts.innerHTML = '<h2>Products</h2>';
+        sectionProducts.innerHTML = '<h2 class="topnav2">Products</h2>';
         sectionProducts.appendChild(fragment);
         changeValue(products);
 
@@ -137,7 +138,7 @@ const renderProducts = products => {
         const div = document.createElement('div');
         div.innerHTML = `<p><strong>No current products on this page under these conditions</strong></p>`;
         fragment.appendChild(div);
-        sectionProducts.innerHTML = '<h2>Products</h2>';
+        sectionProducts.innerHTML = '<h2 class="topnav2">Products</h2>';
         sectionProducts.appendChild(fragment);
     }
 

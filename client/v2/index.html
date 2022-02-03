@@ -1,101 +1,143 @@
 ﻿<!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>👕 Clear Fahion | Environmentally & human-friendly clothes</title>
-  </head>
-  <body>
-    <h1>Clear fashion</h1>
-    <section id="options">
-      <div id="show">
-        <label for="show-select">Show:</label>
-        <select name="show" id="show-select">
-          <option value="12">12</option>
-          <option value="24">24</option>
-          <option value="48">48</option>
-        </select>
-      </div>
-      <div id="page">
-        <label for="page-select">Go to page:</label>
-        <select name="page" id="page-select"> </select>
-      </div>
-      <div id="filters">
-          <div id="release">
-              <label for="price-select">filter by price:</label>
-              <input type="checkbox" id="price-select" name="price" value="true" onclick="displayPriceRange()">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="header">
+        <h1>Clear fashion 🚀</h1>
+    </div>
+    <div class="topnav"><a href="#"></a></div>
+    <div class="row">
+        <div class="columnleft">            
+            <div class="card">
+                <h2 class="topnav2">Filters</h2>
+                <section id="options">
+                    <div id="show">
+                        <label for="show-select">Show:</label>
+                        <select name="show" id="show-select">
+                            <option value="12">12</option>
+                            <option value="24">24</option>
+                            <option value="48">48</option>
+                        </select>
+                    </div>
+                    <div id="page">
+                        <label for="page-select">Go to page:</label>
+                        <select name="page" id="page-select"> </select>
+                    </div>
+                    <div id="brand">
+                        <label for="brand-select">By brands:</label>
+                        <select name="brand" id="brand-select">
+                            <option value="all" selected>--all brands--</option>
+                        </select>
+                    </div>
+                    <div id="sort">
+                        <label for="sort-select">Sort:</label>
+                        <select name="sort" id="sort-select">
+                            <option value="price-asc">Cheaper</option>
+                            <option value="price-desc">Expensive</option>
+                            <option value="date-desc">Recently released</option>
+                            <option value="date-asc">Anciently released</option>
+                        </select>
+                    </div>
+                    <div id="filters">
+                        <div class="switch_box" id="release">
+                            <label for="recent-select">Recent products only:</label>
+                            <input type="checkbox" class="switch_1" id="recent-select" name="recent" value="true">
+                        </div>
+                        <div class="switch_box" id="favouriteItems">
+                            <label for="favourite-select">show favourite only:</label>
+                            <input type="checkbox" class="switch_1" id="favourite-select" name="fav" value="false">
+                        </div>
+                        <div class="switch_box" id="price">
+                            <label for="price-select">filter by price:</label>
+                            <input type="checkbox" class="switch_1" id="price-select" name="price" value="true" onclick="displayPriceRange()">
 
-              <div id="PriceRange" style="display:none;">
-                  <div>
-                      <input type="radio" id="price50" name="priceRadio" value="50" onclick="RadioOnclick()" checked>
-                      <label for="price50">50</label>
-                  </div>
+                            <div id="PriceRange" style="display:none;">
+                                <!--
+                                <div>
+                                    <input type="radio" id="price50" name="priceRadio" value="50" onclick="RadioOnclick()" checked>
+                                    <label for="price50">50</label>
+                                </div>
 
-                  <div>
-                      <input type="radio" id="price75" name="priceRadio" value="75" onclick="RadioOnclick()">
-                      <label for="price75">75</label>
-                  </div>
+                                <div>
+                                    <input type="radio" id="price75" name="priceRadio" value="75" onclick="RadioOnclick()">
+                                    <label for="price75">75</label>
+                                </div>
 
-                  <div>
-                      <input type="radio" id="price100" name="priceRadio" value="100" onclick="RadioOnclick()">
-                      <label for="price100">100</label>
-                  </div>
-              </div>
-          </div>
+                                <div>
+                                    <input type="radio" id="price100" name="priceRadio" value="100" onclick="RadioOnclick()">
+                                    <label for="price100">100</label>
+                                </div>-->
 
-          <div id="release">
-              <label for="recent-select">Recent products only:</label>
-              <input type="checkbox" id="recent-select" name="recent" value="true">
-          </div>
-          <div id="favouriteItems">
-              <label for="favourite-select">show favourite only:</label>
-              <input type="checkbox" id="favourite-select" name="fav" value="false">
-          </div>
-          <div id="brand">
-              <label for="brand-select">By brands:</label>
-              <select name="brand" id="brand-select">
-                  <option value="all" selected>--all brands--</option>
-
-              </select>
-          </div>
-      </div>
-      <div id="sort">
-        <label for="sort-select">Sort:</label>
-        <select name="sort" id="sort-select">
-          <option value="price-asc">Cheaper</option>
-          <option value="price-desc">Expensive</option>
-          <option value="date-desc">Recently released</option>
-          <option value="date-asc">Anciently released</option>
-        </select>
-      </div>
-    </section>
-    <section id="indicators">
-      <h2>Indicators</h2>
-      <div>
-        <span>Number of products</span>
-        <span id="nbProducts">0</span>
-      </div>
-      <div>
-        <span>Number of new products</span>
-        <span id="nbNewProducts">0</span>
-      </div>
-      <div>
-        <span>p50 price value</span>
-        <span id="P50">0</span>
-      </div>
-      <div>
-        <span>p90 price value</span>
-        <span id="P90">0</span>
-      </div>
-      <div>
-        <span>p95 price value</span>
-        <span id="P95">0</span>
-      </div>
-      <div>
-        <span>Last released date</span>
-        <span id="DateLatestProduct">2020-01-01</span>
-      </div>
-    </section>
-    <section id="products"></section>
+                                <ul id="filter1" class="filter-switch inline-flex items-center relative h-10 p-1 space-x-1 bg-gray-200 rounded-md font-semibold text-blue-600 my-4">
+                                    <li class="filter-switch-item flex relative h-8 bg-gray-300x">
+                                        <input type="radio" id="price50" name="priceRadio" value="50" onclick="RadioOnclick()" class="sr-only" checked>
+                                        <label for="price50" class="h-8 py-1 px-2 text-sm leading-6 text-gray-600 hover:text-gray-800 bg-white rounded shadow">
+                                            50
+                                        </label>
+                                        <div aria-hidden="true" class="filter-active"></div>
+                                    </li>
+                                    <li class="filter-switch-item flex relative h-8 bg-gray-300x">
+                                        <input type="radio" id="price75" name="priceRadio" value="75" onclick="RadioOnclick()" class="sr-only">
+                                        <label for="price75" class="h-8 py-1 px-2 text-sm leading-6 text-gray-600 hover:text-gray-800 bg-white rounded shadow">
+                                            75
+                                        </label>
+                                    </li>
+                                    <li class="filter-switch-item flex relative h-8 bg-gray-300x">
+                                        <input type="radio" id="price100" name="priceRadio" value="100" onclick="RadioOnclick()" class="sr-only">
+                                        <label for="price100" class="h-8 py-1 px-2 text-sm leading-6 text-gray-600 hover:text-gray-800 bg-white rounded shadow">
+                                            100
+                                        </label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            
+            <div class="card">
+                <h2 class="topnav2">Indicators</h2>
+                <section id="indicators">
+                    <div>
+                        <span>Number of products</span>
+                        <span id="nbProducts">0</span>
+                    </div>
+                    <div>
+                        <span>Number of new products</span>
+                        <span id="nbNewProducts">0</span>
+                    </div>
+                    <div>
+                        <span>p50 price value</span>
+                        <span id="P50">0</span>
+                    </div>
+                    <div>
+                        <span>p90 price value</span>
+                        <span id="P90">0</span>
+                    </div>
+                    <div>
+                        <span>p95 price value</span>
+                        <span id="P95">0</span>
+                    </div>
+                    <div>
+                        <span>Last released date</span>
+                        <span id="DateLatestProduct">2020-01-01</span>
+                    </div>
+                </section>
+            </div>
+        </div>        
+        <div class="columnright">
+            <section class="card" id="products"></section>
+        </div>    
+        
+    </div>   
+    <div class="topnav"><a href="#"></a></div>
+    <div class="footer">
+        <h2>Nicolas Carval</h2>
+    </div>
     <script type="text/javascript" charset="UTF-8" src="portfolio.js"></script>
-  </body>
+</body>
 </html>
