@@ -45,10 +45,10 @@ const setCurrentProducts = ({ result, meta }) => {
  * @param  {Number}  [size=12] - size of the page
  * @return {Object}
  */
-const fetchProducts = async (page = 1, size = 12) => {
+const fetchProducts = async (page = 1, size = 12, brand="") => {
     try {
         const response = await fetch(
-            `https://clear-fashion-api.vercel.app?page=${page}&size=${size}`
+            `https://clear-fashion-api.vercel.app?page=${page}&size=${size}&brand=${brand}`
         );
         const body = await response.json();
 
@@ -93,9 +93,9 @@ const fetchBrands = async () => {
 const renderProducts = products => {
     if (selectFavourite.checked) {
         products = JSON.parse(localStorage.getItem('favourites') || '[]');
-    }
-    if (selectBrand.value != "all") {
-        products = GetProductsByBrand(selectBrand.value, products);
+        if (selectBrand.value != "") {
+            products = GetProductsByBrand(selectBrand.value, products);
+        }
     }
     if (selectRecent.checked) {
         products = SortProductsDate(products)
@@ -167,7 +167,7 @@ const renderIndicators = pagination => {
     const { count } = pagination;
     spanNbProducts.innerHTML = count;
 
-    fetchProducts(1, count).then(product => {
+    fetchProducts(1, count, selectBrand.value).then(product => {
         const productSortedDate = SortProductsDate(product.result);
         spanDateLatestProduct.innerHTML = productSortedDate[0].released;
 
@@ -200,7 +200,7 @@ selectShow.addEventListener('change', event => {
     if (newPage > parseInt(spanNbProducts.innerHTML) / parseInt(event.target.value)) {
         newPage = Math.ceil(parseInt(spanNbProducts.innerHTML) / parseInt(event.target.value))
     }
-    fetchProducts(newPage, parseInt(event.target.value))
+    fetchProducts(newPage, parseInt(event.target.value), selectBrand.value)
         .then(setCurrentProducts)
         .then(() => render(currentProducts, currentPagination));
 });
@@ -211,7 +211,7 @@ selectShow.addEventListener('change', event => {
  */
 selectPage.addEventListener('change', event => {
 
-    fetchProducts(parseInt(event.target.value), selectShow.value)
+    fetchProducts(parseInt(event.target.value), selectShow.value, selectBrand.value)
         .then(setCurrentProducts)
         .then(() => render(currentProducts, currentPagination));
 });
@@ -222,28 +222,25 @@ selectPage.addEventListener('change', event => {
  * @type {[type]}
  */
 selectBrand.addEventListener('change', event => {
-
+    /*
     fetchProducts(currentPagination.currentPage, selectShow.value)
         .then(setCurrentProducts)
+        .then(() => render(currentProducts, currentPagination));*/
+
+    fetchProducts(currentPagination.currentPage, selectShow.value, event.target.value)
+        .then(setCurrentProducts)
         .then(() => render(currentProducts, currentPagination));
-    /*
-    if (event.target.value != "all") {
-        renderProducts(GetProductsByBrand(event.target.value,))
-    } else {
-        fetchProducts(currentPagination.currentPage, selectShow.value)
-            .then(setCurrentProducts)
-            .then(() => render(currentProducts, currentPagination));
-    }*/
+    
 });
 
 selectSort.addEventListener('change', event => {
-    fetchProducts(currentPagination.currentPage, selectShow.value)
+    fetchProducts(currentPagination.currentPage, selectShow.value, selectBrand.value)
         .then(setCurrentProducts)
         .then(() => render(currentProducts, currentPagination));
 })
 
 selectRecent.addEventListener('change', event => {
-    fetchProducts(currentPagination.currentPage, selectShow.value)
+    fetchProducts(currentPagination.currentPage, selectShow.value, selectBrand.value)
         .then(setCurrentProducts)
         .then(() => render(currentProducts, currentPagination));
 })
@@ -256,20 +253,27 @@ selectFavourite.addEventListener('click', event => {
         setCurrentProducts({ result, meta });
         render(currentProducts, currentPagination);
     } else {
-        fetchProducts(currentPagination.currentPage, selectShow.value)
-            .then(setCurrentProducts)
-            .then(() => render(currentProducts, currentPagination));
+        if (selectBrand.value == "") {
+            fetchProducts(currentPagination.currentPage, selectShow.value)
+                .then(setCurrentProducts)
+                .then(() => render(currentProducts, currentPagination));
+        } else {
+            fetchProducts(currentPagination.currentPage, selectShow.value, selectBrand.value)
+                .then(setCurrentProducts)
+                .then(() => render(currentProducts, currentPagination));
+        }
+        
     }
 })
 
 selectPrice.addEventListener('change', event => {
-    fetchProducts(currentPagination.currentPage, selectShow.value)
+    fetchProducts(currentPagination.currentPage, selectShow.value, selectBrand.value)
         .then(setCurrentProducts)
         .then(() => render(currentProducts, currentPagination));
 })
 
 async function RadioOnclick() {
-    fetchProducts(currentPagination.currentPage, selectShow.value)
+    fetchProducts(currentPagination.currentPage, selectShow.value, selectBrand.value)
         .then(setCurrentProducts)
         .then(() => render(currentProducts, currentPagination));
 }
