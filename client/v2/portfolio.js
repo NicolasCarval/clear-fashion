@@ -45,7 +45,7 @@ const setCurrentProducts = ({ result, meta }) => {
  * @param  {Number}  [size=12] - size of the page
  * @return {Object}
  */
-const fetchProducts = async (page = 1, size = 12, brand="") => {
+const fetchProducts = async (page = 1, size = 12, brand = "") => {
     try {
         const response = await fetch(
             `https://clear-fashion-api.vercel.app?page=${page}&size=${size}&brand=${brand}`
@@ -76,7 +76,7 @@ const fetchBrands = async () => {
 
         if (body.success !== true) {
             console.error(body);
-            return { result:["loom","dedicated","adresse","1083"] };
+            return { result: ["loom", "dedicated", "adresse", "1083"] };
         }
         console.log("yes")
         return body.data;
@@ -122,12 +122,23 @@ const renderProducts = products => {
         <span>${product.brand}</span>
         <a href="${product.link}" target="_blank">${product.name}</a>
         <span>${product.price}</span>
-        <input type="button" id="fav${product.uuid}" value="Add" onclick="manageFavourite('${product.uuid}')">
+        <div class='favbtn'>
+            <div class="center">
+                <label class="label">
+                    <input  class="label__checkbox" type="checkbox" id="fav${product.uuid}" value="Add" onchange="manageFavourite('${product.uuid}')"/>
+                    <span class="label__text">
+                        <span class="label__check">
+                            <i class="fa fa-check icon"></i>
+                        </span>
+                    </span>
+                </label>
+            </div>
+        </div>
       </div>
     `;
             })
             .join('');
-
+        //<input type="checkbox" id="fav${product.uuid}" value="Add" onchange="manageFavourite('${product.uuid}')">
         div.innerHTML = template;
         fragment.appendChild(div);
         sectionProducts.innerHTML = '<h2 class="topnav2">Products</h2>';
@@ -230,7 +241,7 @@ selectBrand.addEventListener('change', event => {
     fetchProducts(currentPagination.currentPage, selectShow.value, event.target.value)
         .then(setCurrentProducts)
         .then(() => render(currentProducts, currentPagination));
-    
+
 });
 
 selectSort.addEventListener('change', event => {
@@ -262,7 +273,7 @@ selectFavourite.addEventListener('click', event => {
                 .then(setCurrentProducts)
                 .then(() => render(currentProducts, currentPagination));
         }
-        
+
     }
 })
 
@@ -279,7 +290,7 @@ async function RadioOnclick() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-        
+
     const products = await fetchProducts(currentPagination.currentPage, selectShow.value);
     fetchBrands().then(BrandSelectOptionCreation);
 
@@ -291,7 +302,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 //Declaration of all additional functions
 
 
-function GetProductsByBrand(brandName,products) {
+function GetProductsByBrand(brandName, products) {
     let brandProducts = [];
     for (let i = 0; i < products.length; i++) {
         if (products[i].brand == brandName) {
@@ -334,7 +345,7 @@ function BrandSelectOptionCreation({ result }) {
         const el = document.createElement("option");
         el.innerHTML = brands[i]
         el.value = brands[i]
-        selectBrand.appendChild(el)        
+        selectBrand.appendChild(el)
     }
     /*
     let Brands = []
@@ -372,7 +383,7 @@ function sortBy(products) {
         sortedProduct = SortProductsDate(products);
         sortedProduct.reverse();
     } else if (selectSort.value == "date-desc") {
-        sortedProduct = SortProductsDate(products);        
+        sortedProduct = SortProductsDate(products);
     } else if (selectSort.value == "price-asc") {
         sortedProduct = SortProductsPrice(products);
         sortedProduct.reverse();
@@ -389,7 +400,7 @@ function displayPriceRange() {
     }
     else {
         showDiv.style.display = "none";
-    }    
+    }
 }
 
 function manageFavourite(id) {
@@ -401,7 +412,7 @@ function manageFavourite(id) {
         newFavourite = currentProducts.find(product => product.uuid == div.id);
         favourites.push(newFavourite);
         localStorage.setItem('favourites', JSON.stringify(favourites));
-        console.log("push:",localStorage.favourites);
+        console.log("push:", localStorage.favourites);
     }
     else {
         div.querySelector(`#fav${id}`).value = "Add";
@@ -410,23 +421,23 @@ function manageFavourite(id) {
         if (index > -1) {
             favourites.splice(index, 1); // 2nd parameter means remove one item only
         }
-        localStorage.setItem('favourites', JSON.stringify(favourites));        
+        localStorage.setItem('favourites', JSON.stringify(favourites));
     }
     if (selectFavourite.checked) {
         render(currentProducts, currentPagination);
     }
-     
+
 }
 
 function changeValue(products) {
     const favourites = JSON.parse(localStorage.getItem('favourites') || '[]');
     for (let i = 0; i < products.length; i++) {
-        const div = document.querySelector("[id=" + CSS.escape(products[i].uuid) + "]");   
+        const div = document.querySelector("[id=" + CSS.escape(products[i].uuid) + "]");
         const newFavourite = favourites.find(product => product.uuid == div.id);
         if (newFavourite !== undefined) {
-            div.querySelector("[id=fav" + CSS.escape(products[i].uuid) + "]").value = "Remove";
+            div.querySelector("[id=fav" + CSS.escape(products[i].uuid) + "]").checked = true;
         }
 
     }
-    
+
 }
