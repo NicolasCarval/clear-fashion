@@ -15,9 +15,8 @@ const parse = data => {
       const link = `https://www.dedicatedbrand.com${$(element)
         .find('.productList-link')
         .attr('href')}`;
-
       return {
-        link,
+        'link':link,
         'brand': 'dedicated',
         'price': parseInt(
           $(element)
@@ -31,8 +30,8 @@ const parse = data => {
           .replace(/\s/g, ' '),
         'photo': $(element)
           .find('.productList-image img')
-          .attr('src'),
-        '_id': uuidv5(link, uuidv5.URL)
+          .attr('data-src'),
+        'id': uuidv5(link, uuidv5.URL)
       };
     })
     .get();
