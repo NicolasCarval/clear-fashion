@@ -23,7 +23,6 @@ const parse = data => {
 
 const parse2 = data => {
     const $ = cheerio.load(data);
-    console.log("yo")
     return $('.product-container')
         .map((i, element) => {
             const link = $(element)
@@ -70,9 +69,8 @@ module.exports.scrape = async url => {
         if (response.ok) {
             const body = await response.text();
             const rep = await parse(body)
-            console.log(rep)
             const url2 = 'https://adresse.paris/630-toute-la-collection?id_category=630&n=' + rep[0]["nbItem"].toString()
-            console.log(url2)
+            
             try {
                 const response2 = await fetch(url2);
 
