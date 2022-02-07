@@ -118,10 +118,16 @@ const renderProducts = products => {
         const template = products
             .map(product => {
                 return `
-      <div class="product" id=${product.uuid}>              
+<a href="${product.link}" target="_blank">
+      <div class="product" id=${product.uuid} >
+        <img src="${product.photo}" width="280px" onerror="this.src='not_found.png';" alt="not found"/>
+        <hr class="solid">
         <span>${product.brand}</span>
+        <hr class="solid">
         <a href="${product.link}" target="_blank">${product.name}</a>
-        <span>${product.price}</span>
+        <hr class="solid">
+<div>
+        <span>${product.price} $</span>
         <div class='favbtn'>
             <div class="center">
                 <label class="label">
@@ -134,7 +140,9 @@ const renderProducts = products => {
                 </label>
             </div>
         </div>
+</div>
       </div>
+</a>
     `;
             })
             .join('');

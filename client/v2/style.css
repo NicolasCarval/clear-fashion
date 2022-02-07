@@ -85,36 +85,49 @@ body {
     text-align:center;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
+
 .row {
     display: flex;
     flex-wrap: wrap;
 }
 
-/*LINE SEPARATOR*/
-hr.solid {
-    border-top: 1px solid grey;
-    opacity: 0.1;
-    width: 150px;
+/*LINKS*/
+a:link, a:visited, a:hover, a:active {
+    text-decoration: none;
+    color:black;
 }
+
+a:active {
+    text-decoration: none;
+    color: black;
+    opacity:0.5;
+}
+    /*LINE SEPARATOR*/
+    hr.solid {
+        border-top: 1px solid grey;
+        opacity: 0.1;
+        width: 150px;
+    }
 
 
 /*FLEX DIV*/
 .flex-container {
   display: flex;
   flex-wrap: wrap;
+  margin-left:30px
 }
 
     .flex-container > div {
-        background-color: lightgrey;
-        /*width: 100px;
-      line-height: 75px;
-  font-size: 30px;
-  */
+        background-color: white;
+        border: 1px solid rgba(0, 0, 0, .1);
         margin: 10px;
         padding: 10px;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        min-width: 300px;
         text-align: center;
     }
+        .flex-container > div:hover {
+            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.19);
+        }
 
 /*CHECKBOX*/
 .switch_box {
@@ -185,10 +198,10 @@ input[type="checkbox"].switch_1 {
 .label__check {
     display: inline-block;
     border-radius: 50%;
-    border: 5px solid rgba(0,0,0,0.1);
+    border: 2px solid rgba(152, 68, 71, 0.1);
     background: white;
     vertical-align: middle;
-    margin-right: 20px;
+    margin-right: 5px;
     width: 2em;
     height: 2em;
     cursor: pointer;
@@ -199,16 +212,16 @@ input[type="checkbox"].switch_1 {
 }
 
     .label__check &:hover {
-        border: 5px solid rgba(0,0,0,0.2);
+        border: 5px solid rgba(152, 68, 71, 0.2);
     }
 
-.label__check i.icon {
-    opacity: 0.2;
-    font-size: ~'calc(1rem + 1vw)';
-    color: transparent;
-    transition: opacity .3s .1s ease;
-    -webkit-text-stroke: 3px rgba(0,0,0,.5);
-}
+    .label__check i.icon {
+        opacity: 0.2;
+        font-size: ~'calc(1rem + 1vw)';
+        color: transparent;
+        transition: opacity .3s .1s ease;
+        -webkit-text-stroke: 3px rgba(152, 68, 71, 0.5);
+    }
 
 .label__checkbox:checked + .label__text .label__check {
     animation: check .5s cubic-bezier(0.895, 0.030, 0.685, 0.220) forwards;
