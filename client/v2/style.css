@@ -38,6 +38,7 @@ body {
 
 .topnav2 {
     background-color: #984447;
+    margin-top:0px;
     padding: 14px 20px;
     text-decoration: none;
     color: white;
@@ -57,18 +58,18 @@ body {
     }
 
 .columnleft {
-    flex: 30%;
+    flex: 40%;
     background-color: white;
     padding: 20px;
+    border-left-color:lightgray;
     
 }
 
 
     /* Left and right column */
 .columnright {
-    flex: 70%;
-    background-color: white;
-    
+    flex: 60%;
+    background-color: white;    
     padding: 20px;
 }
 
@@ -83,7 +84,17 @@ body {
     padding: 0px 0px 20px 0px;
     margin-top: 20px;
     text-align:center;
+    /*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);*/
+    border:1px solid lightgray;
+}
+
+.card2 {
+    background-color: white;
+    padding: 0px 0px 20px 0px;
+    margin-top: 20px;
+    text-align: center;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border: 1px solid lightgray;
 }
 
 .row {
@@ -112,14 +123,15 @@ a:active {
 
 /*FLEX DIV*/
 .flex-container {
-  display: flex;
-  flex-wrap: wrap;
-  margin-left:30px
+    display: flex;
+    flex-wrap: wrap;
+    margin:10px;
+    justify-content: center;
 }
 
     .flex-container > div {
         background-color: white;
-        border: 1px solid rgba(0, 0, 0, .1);
+        /*border: 1px solid rgba(0, 0, 0, .1);*/
         margin: 10px;
         padding: 10px;
         min-width: 300px;
@@ -198,7 +210,7 @@ input[type="checkbox"].switch_1 {
 .label__check {
     display: inline-block;
     border-radius: 50%;
-    border: 2px solid rgba(152, 68, 71, 0.1);
+    border: 2px solid rgba(0, 0, 0, 0.2);
     background: white;
     vertical-align: middle;
     margin-right: 5px;
@@ -212,15 +224,15 @@ input[type="checkbox"].switch_1 {
 }
 
     .label__check &:hover {
-        border: 5px solid rgba(152, 68, 71, 0.2);
+        border: 5px solid rgba(0, 0, 0, 0.4);
     }
 
     .label__check i.icon {
-        opacity: 0.2;
+        opacity: 0.3;
         font-size: ~'calc(1rem + 1vw)';
         color: transparent;
         transition: opacity .3s .1s ease;
-        -webkit-text-stroke: 3px rgba(152, 68, 71, 0.5);
+        -webkit-text-stroke: 3px rgba(0, 0, 0, 0.6);
     }
 
 .label__checkbox:checked + .label__text .label__check {
@@ -275,7 +287,7 @@ input[type="checkbox"].switch_1 {
     50% {
         width: 2em;
         height: 2em;
-        background: #00d478;
+        background: #984447; /*#00d478;*/
         border: 0;
         opacity: 0.6;
     }
@@ -283,7 +295,7 @@ input[type="checkbox"].switch_1 {
     100% {
         width: 2em;
         height: 2em;
-        background: #00d478;
+        background: #984447; /*#00d478;*/
         border: 0;
         opacity: 1;
     }

@@ -120,15 +120,16 @@ const renderProducts = products => {
                 return `
 <a href="${product.link}" target="_blank">
       <div class="product" id=${product.uuid} >
-        <img src="${product.photo}" width="280px" onerror="this.src='not_found.png';" alt="not found"/>
-        <hr class="solid">
-        <span>${product.brand}</span>
-        <hr class="solid">
+        <img src="${product.photo}" height="380px" width="303px" onerror="this.src='not_found.png';" alt="not found"/>
+        <hr class="solid">        
         <a href="${product.link}" target="_blank">${product.name}</a>
         <hr class="solid">
 <div>
-        <span>${product.price} $</span>
-        <div class='favbtn'>
+<span><strong>${product.brand}</strong></span>
+        <span>- ${product.price} euros</span>
+        
+</div>
+<div class='favbtn'>
             <div class="center">
                 <label class="label">
                     <input  class="label__checkbox" type="checkbox" id="fav${product.uuid}" value="Add" onchange="manageFavourite('${product.uuid}')"/>
@@ -140,7 +141,6 @@ const renderProducts = products => {
                 </label>
             </div>
         </div>
-</div>
       </div>
 </a>
     `;
