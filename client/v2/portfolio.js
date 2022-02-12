@@ -120,13 +120,13 @@ const renderProducts = products => {
                 return `
 <a href="${product.link}" target="_blank">
       <div class="product" id=${product.uuid} >
-        <img src="${product.photo}" height="380px" width="303px" onerror="this.src='not_found.png';" alt="not found"/>
+        <img src="${product.photo}"  width="303px" onerror="this.src='not_found.png';" alt="not found"/>
         <hr class="solid">        
-        <a href="${product.link}" target="_blank">${product.name}</a>
+        <a href="${product.link}" target="_blank"><strong>${product.name}</strong></a>
         <hr class="solid">
 <div>
-<span><strong>${product.brand}</strong></span>
-        <span>- ${product.price} euros</span>
+<span><i>${product.brand}</i></span>
+        <span>- <i>${product.price} euros</i></span>
         
 </div>
 <div class='favbtn'>
@@ -184,19 +184,19 @@ const renderPagination = pagination => {
  */
 const renderIndicators = pagination => {
     const { count } = pagination;
-    spanNbProducts.innerHTML = count;
+    spanNbProducts.innerHTML = `<strong>${count}</strong>`;
 
     fetchProducts(1, count, selectBrand.value).then(product => {
         const productSortedDate = SortProductsDate(product.result);
-        spanDateLatestProduct.innerHTML = productSortedDate[0].released;
+        spanDateLatestProduct.innerHTML = `<strong>${productSortedDate[0].released}</strong>`;
 
         const nbRecentlyReleased = CountRecentlyReleased(productSortedDate);
-        spanNbNewProducts.innerHTML = nbRecentlyReleased;
+        spanNbNewProducts.innerHTML = `<strong>${nbRecentlyReleased}</strong>`;
 
         const { p50, p90, p95 } = pValueCalculator(productSortedDate);
-        span50.innerHTML = p50;
-        span90.innerHTML = p90;
-        span95.innerHTML = p95;
+        span50.innerHTML = `<strong>${p50}</strong>`;
+        span90.innerHTML = `<strong>${p90}</strong>`;
+        span95.innerHTML = `<strong>${p95}</strong>`;
     });
 };
 

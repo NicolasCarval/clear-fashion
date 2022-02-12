@@ -8,40 +8,55 @@
     box-sizing: border-box;
 }
 
+select {
+    font-family: 'Big Shoulders Text', sans-serif;
+    font-size: 18px;
+    text-align: center;
+}
+    select > option {
+        font-family: 'Big Shoulders Display', sans-serif;
+        font-size: 18px;
+        text-align: center;
+    }
+
+
 body {
-    font-family: Arial;
+    font-family: 'Big Shoulders Text', sans-serif;
+    font-size: 22px;
     margin: 0;
-    background: white ;
+    background: white;
 }
 
 .header {
     padding: 30px;
     text-align: center;
-    background: white;
-    border-top: solid #984447;
+    background: #96B4D4; /*#984447;*/
     color: black;
 }
 
 .footer {
     padding: 10px;
     text-align: center;
-    background: #984447;
-    color: white;
+    background: #96B4D4; /*#984447;*/
+    color: black;
 }
 
 /* The navbar container */
 .topnav {
     display: flex;
-    background-color: #984447;
-    color: white;
+    background-color: #96B4D4; /*#984447;*/
+    color: black;
+    text-align:left;
+    margin-left: 10px;
 }
 
 .topnav2 {
-    background-color: #984447;
-    margin-top:0px;
+    background-color: #96B4D4; /*#984447;*/
+    margin-top: 0px;
+    border-radius: 6px 6px 0px 0px;
     padding: 14px 20px;
     text-decoration: none;
-    color: white;
+    color: black;
     text-align: center;
 }
 .topnav a {
@@ -58,18 +73,17 @@ body {
     }
 
 .columnleft {
-    flex: 40%;
+    flex: 20%;
     background-color: white;
     padding: 20px;
-    border-left-color:lightgray;
-    
+    border-left-color: lightgray;
 }
 
 
     /* Left and right column */
 .columnright {
-    flex: 60%;
-    background-color: white;    
+    flex: 80%;
+    background-color: white;
     padding: 20px;
 }
 
@@ -86,6 +100,7 @@ body {
     text-align:center;
     /*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);*/
     border:1px solid lightgray;
+    border-radius:8px;
 }
 
 .card2 {
@@ -95,6 +110,7 @@ body {
     text-align: center;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     border: 1px solid lightgray;
+    border-radius:8px;
 }
 
 .row {
@@ -287,7 +303,7 @@ input[type="checkbox"].switch_1 {
     50% {
         width: 2em;
         height: 2em;
-        background: #984447; /*#00d478;*/
+        background: green; /*#00d478;*/
         border: 0;
         opacity: 0.6;
     }
@@ -295,7 +311,7 @@ input[type="checkbox"].switch_1 {
     100% {
         width: 2em;
         height: 2em;
-        background: #984447; /*#00d478;*/
+        background: green; /*#00d478;*/
         border: 0;
         opacity: 1;
     }
