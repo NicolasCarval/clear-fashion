@@ -3,7 +3,7 @@ const dedicatedbrand = require('./sites/dedicatedbrand');
 const montlimartbrand = require('./sites/montlimart');
 const adresseparisbrand = require('./sites/adresseparis');
 
-const jsonProducts = require('./products2.json');
+const jsonProducts = require('./products.json');
 
 const fs = require('fs');
 
@@ -31,9 +31,14 @@ async function sandbox(eshop = "eshop") {
         
 
         let today = new Date();
+        const dd = String(today.getDate()).padStart(2, '0');
+        const mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        const yyyy = today.getFullYear();
+
+        today = yyyy + '-' + mm + '-' + dd;
 
         for (let i = 0; i < finalProducts.length; i++) {
-            finalProducts[i].date = today.toDateString()            
+            finalProducts[i].date = today            
             let alreadyExist = false
             for (let j = 0; j < jsonProducts.length && alreadyExist==false; j++) {
                 if (finalProducts[i].link == jsonProducts[j].link) {
@@ -45,9 +50,21 @@ async function sandbox(eshop = "eshop") {
                 jsonProducts.push(finalProducts[i]);
             }
         }
+        for (let i = 0; i < jsonProducts.length; i++) {
+            let alreadyExist = false
+            for (let j = 0; j < finalProducts.length && alreadyExist == false; j++) {
+                if (finalProducts[i].link == jsonProducts[j].link) {
+                    alreadyExist = true
+                }
+            }
+            if (alreadyExist == false) {
+
+                jsonProducts.splice(i,1);
+            }
+        }
         console.log("total after :",jsonProducts.length)
         
-        fs.writeFileSync("./products2.json", JSON.stringify(jsonProducts, null, 4));
+        fs.writeFileSync("./products.json", JSON.stringify(jsonProducts, null, 4));
         console.log('done');
         process.exit(0);
     } catch (e) {
