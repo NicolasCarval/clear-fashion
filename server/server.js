@@ -29,6 +29,13 @@ const ProductsPrice = async (price=50) => {
     console.log(products);
 }
 
+const ProductsSortedPrice = async (asc=1) => {
+    const products = await collection.find({}).sort({ "price": asc }).toArray();
+    for (let i = 0; i < 10; i++) {
+        console.log(products[i]);
+    }   
+}
+
 
 const connection = async () => {
     const client = await MongoClient.connect(MONGODB_URI, { 'useNewUrlParser': true });
@@ -37,7 +44,8 @@ const connection = async () => {
     //await findNumber();
     //await Brands();
     //await ProductsBrands();
-    await ProductsPrice(10);
+    //await ProductsPrice(10);
+    await ProductsSortedPrice(-1);
     process.exit(0);
 }
 
