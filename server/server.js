@@ -14,9 +14,14 @@ const findNumber = async () => {
     console.log(products);
 }
 
-const Brands = async (brand="dedicated") => {
-    const products = await collection.find({"brand":brand}).toArray();
+const Brands = async () => {
+    const products = await collection.distinct("brand");
     console.log(products);    
+}
+
+const ProductsBrands = async (brand = "montlimart") => {
+    const products = await collection.find({ "brand": brand }).toArray();
+    console.log(products);
 }
 
 
@@ -26,6 +31,7 @@ const connection = async () => {
     collection = db.collection('products');
     await findNumber();
     await Brands();
+    await ProductsBrands();
     process.exit(0);
 }
 
