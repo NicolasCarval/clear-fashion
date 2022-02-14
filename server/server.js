@@ -24,14 +24,20 @@ const ProductsBrands = async (brand = "montlimart") => {
     console.log(products);
 }
 
+const ProductsPrice = async (price=50) => {
+    const products = await collection.find({ "price": { $lte: parseFloat(price) } }).toArray();
+    console.log(products);
+}
+
 
 const connection = async () => {
     const client = await MongoClient.connect(MONGODB_URI, { 'useNewUrlParser': true });
     const db = client.db(MONGODB_DB_NAME)
     collection = db.collection('products');
-    await findNumber();
-    await Brands();
-    await ProductsBrands();
+    //await findNumber();
+    //await Brands();
+    //await ProductsBrands();
+    await ProductsPrice(10);
     process.exit(0);
 }
 
