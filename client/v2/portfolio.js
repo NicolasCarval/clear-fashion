@@ -233,6 +233,7 @@ selectPage.addEventListener('change', event => {
     fetchProducts(parseInt(event.target.value), selectShow.value, selectBrand.value)
         .then(setCurrentProducts)
         .then(() => render(currentProducts, currentPagination));
+
 });
 
 /**
