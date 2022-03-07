@@ -1,5 +1,7 @@
+
 const { MongoClient } = require('mongodb');
-const MONGODB_URI = 'mongodb+srv://clearfashion:clearfashion@clearfashioncluster.m1kpo.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
+require('dotenv').config({ path: '../.env' })
+const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB_NAME = 'ClearFashionCluster';
 const products = require('./products.json');
 let collection = null
@@ -68,10 +70,10 @@ const connection = async () => {
     await findNumber();
     //await Brands();
     //await ProductsBrands();
-    //await ProductsPrice(10);
+    await ProductsPrice(10);
     //await ProductsSortedPrice(-1);
     //await ProductsSortedDate();
-    await ProductsRecent();
+    //await ProductsRecent();
     await client.close()
     process.exit(0);
 }

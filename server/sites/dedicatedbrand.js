@@ -54,7 +54,7 @@ const parse2 = data => {
                 'photo': $(element)
                     .find('.productList-image img')
                     .attr('data-src'),
-                'id': uuidv5(link, uuidv5.URL)
+                '_id': uuidv5(link, uuidv5.URL)
             };
         })
         .get();
