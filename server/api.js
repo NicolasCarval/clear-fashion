@@ -26,14 +26,53 @@ app.get('/', (request, response) => {
   response.send({'ack': true});
 });
 
+app.get('/products/search', (request, response) => {
+    let query = {};
+    let limit = 12;
+    if (request.query.brand) {        
+        query["brand"] = request.query.brand;
+    }
+    if (request.query.price && parseInt(request.query.price) > 0) {        
+        query["price"] = { $lte: parseFloat(request.query.price) };
+    }
+    if (request.query.limit && parseInt(request.query.limit) > 0 && parseInt(request.query.limit) <=48) {
+        limit = parseInt(request.query.limit);
+    }
+
+    let final_answer = { "limit": limit, "total": 0, "results": [] }
+    collection.find(query).count((error, result) => {
+        if (error) {
+            return response.status(500).send(error);
+        }
+        final_answer["total"] = parseInt(result);
+    });
+    collection.find(query).sort({ "price": "asc" }).limit(limit).toArray((error, result) => {
+        if (error) {
+            return response.status(500).send(error);
+        }
+        final_answer["results"] = result
+        response.send(final_answer);
+    });
+});
+
 app.get('/products/:id', (request, response) => {
 
-    collection.findOne({ "_id": new ObjectId(request.params.id) }, (error, result) => {
+    collection.findOne({ "_id": request.params.id }, (error, result) => {
             if (error) {
                 return response.status(500).send(error);
             }
             response.send(result);
         });
+});
+
+app.get('/brands', (request, response) => {
+
+    collection.distinct("brand", (error, result) => {
+        if (error) {
+            return response.status(500).send(error);
+        }
+        response.send({ "result": result });
+    });
 });
 
 
