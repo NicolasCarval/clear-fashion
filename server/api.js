@@ -9,6 +9,8 @@ const MONGODB_DB_NAME = 'ClearFashionCluster';
 const products = require('./products.json');
 const ObjectId = require("mongodb").ObjectID;
 
+const { calculateLimitAndOffset, paginate } = require('paginate-info')
+
 
 const PORT = 8092;
 
@@ -26,33 +28,53 @@ app.get('/', (request, response) => {
   response.send({'ack': true});
 });
 
-app.get('/products/search', (request, response) => {
-    let query = {};
-    let limit = 12;
-    if (request.query.brand) {        
-        query["brand"] = request.query.brand;
-    }
-    if (request.query.price && parseInt(request.query.price) > 0) {        
-        query["price"] = { $lte: parseFloat(request.query.price) };
-    }
-    if (request.query.limit && parseInt(request.query.limit) > 0 && parseInt(request.query.limit) <=48) {
-        limit = parseInt(request.query.limit);
-    }
+app.get('/products/search', async (request, response) => {
+    try {
+        let query = {};
+        let final_answer = {
+            "success": true,
+            "data": {
+                "results": [],
+                "meta": {
+                    "count": 0
+                }
+            }
+        }
+        let size = 12;
+        let page = 1;
 
-    let final_answer = { "limit": limit, "total": 0, "results": [] }
-    collection.find(query).count((error, result) => {
-        if (error) {
-            return response.status(500).send(error);
+        if (request.query.brand) {
+            query["brand"] = request.query.brand;
         }
-        final_answer["total"] = parseInt(result);
-    });
-    collection.find(query).sort({ "price": "asc" }).limit(limit).toArray((error, result) => {
-        if (error) {
-            return response.status(500).send(error);
+        if (request.query.price && parseInt(request.query.price) > 0) {
+            query["price"] = { $lte: parseFloat(request.query.price) };
         }
-        final_answer["results"] = result
+        if (request.query.size && parseInt(request.query.size) > 0 && parseInt(request.query.size) <= 48) {
+            size = parseInt(request.query.size);
+        }
+        if (request.query.page && parseInt(request.query.page) > 0 && parseInt(request.query.page) <= 100) {
+            page = parseInt(request.query.page);
+        }
+
+        console.log(query)
+        console.log("size: " + size + " page: " + page);
+
+        const productCount = await collection.find(query).count();
+        final_answer.data.meta["count"] = productCount;
+
+        console.log(productCount + " " + final_answer.data.meta["count"])
+        const { limit, offset } = calculateLimitAndOffset(page, size);
+        console.log("limit: " + limit + " offset: " + offset)
+        const productList = await collection.find(query).sort({ "price": "asc" }).skip(offset).limit(limit).toArray();
+        final_answer.data["results"] = productList;
+        const meta = paginate(page, productCount, productList, size);
+
+        final_answer.data.meta = meta;
         response.send(final_answer);
-    });
+
+    } catch (error) {
+        response.status(500).send(error);
+    }    
 });
 
 app.get('/products/:id', (request, response) => {
@@ -74,7 +96,6 @@ app.get('/brands', (request, response) => {
         response.send({ "result": result });
     });
 });
-
 
 var database, collection;
 app.listen(PORT, () => {
