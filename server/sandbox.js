@@ -2,10 +2,12 @@
 const dedicatedbrand = require('./sites/dedicatedbrand');
 const montlimartbrand = require('./sites/montlimart');
 const adresseparisbrand = require('./sites/adresseparis');
+const loom = require('./sites/loom');
 
 const jsonProducts = require('./products.json');
 
 const fs = require('fs');
+const db = require('./db');
 
 const links = {
     'montlimartLink': 'https://www.montlimart.com/toute-la-collection.html?limit=all',
@@ -15,6 +17,7 @@ const links = {
 
 async function sandbox(eshop = "eshop") {
     try {
+        
         console.log(`🕵️‍♀️  browsing ${eshop} source`);
         
         const products = await dedicatedbrand.scrape(links["dedicatedLink"]);
@@ -26,7 +29,22 @@ async function sandbox(eshop = "eshop") {
         const products3 = await adresseparisbrand.scrape(links["adresseparisLink"]);
         console.log("adresse paris is done :", products3.length)
 
-        const finalProducts = products.concat(products2, products3);
+
+        let pages = [
+            'https://www.loom.fr/collections/hauts-homme',
+            'https://www.loom.fr/collections/bas-homme'
+        ];
+               
+        const promises = pages.map(page => loom.scrape(page));
+        const results = await Promise.all(promises);
+        
+        let products4 = []
+        products4.push(results.flat());
+        products4 = products4.flat();
+
+        console.log(`loom is done :`, products4.length);
+
+        const finalProducts = products.concat(products2, products3, products4);
         console.log("total before :", finalProducts.length)
         
 
@@ -66,6 +84,13 @@ async function sandbox(eshop = "eshop") {
         
         fs.writeFileSync("./products.json", JSON.stringify(jsonProducts, null, 4));
         console.log('done');
+        const result = await db.insert(jsonProducts);
+
+        console.log(`💽  ${result.insertedCount} inserted products`);
+
+        console.log('\n');
+        db.close();
+
         process.exit(0);
     } catch (e) {
         console.error(e);

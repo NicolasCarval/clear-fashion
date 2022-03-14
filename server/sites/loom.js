@@ -17,7 +17,7 @@ const parse = data => {
         .attr('href')}`;
 
       return {
-        link,
+        'link':link,
         'brand': 'loom',
         'price': parseInt(
           $(element)
