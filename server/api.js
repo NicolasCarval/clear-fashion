@@ -31,6 +31,7 @@ app.get('/', (request, response) => {
 app.get('/products/search', async (request, response) => {
     try {
         let query = {};
+        let sort = { "price": "asc"}
         let final_answer = {
             "success": true,
             "data": {
@@ -49,6 +50,30 @@ app.get('/products/search', async (request, response) => {
         if (request.query.price && parseInt(request.query.price) > 0) {
             query["price"] = { $lte: parseFloat(request.query.price) };
         }
+        if (request.query.recent == "yes") {
+            const recentDate = new Date()
+            const pastDate = recentDate.getDate() - 14;
+            recentDate.setDate(pastDate);
+            const dd = String(recentDate.getDate()).padStart(2, '0');
+            const mm = String(recentDate.getMonth() + 1).padStart(2, '0'); //January is 0!
+            const yyyy = recentDate.getFullYear();
+
+            const ago = yyyy + '-' + mm + '-' + dd;
+            console.log(ago)
+            query["date"] = { $gte: ago }
+        }
+        if (request.query.sort == "desc" || request.query.sort == "recently" || request.query.sort == "anciently") {
+            if (request.query.sort == "desc") {
+                sort = { "price": "desc" }
+            } else {
+                if (request.query.sort == "recently") {
+                    sort = { "date": "desc" }
+                }
+                else {
+                    sort = { "date": "asc" }
+                }
+            }
+        }
         if (request.query.size && parseInt(request.query.size) > 0 && parseInt(request.query.size) <= 48) {
             size = parseInt(request.query.size);
         }
@@ -64,8 +89,8 @@ app.get('/products/search', async (request, response) => {
 
         console.log(productCount + " " + final_answer.data.meta["count"])
         const { limit, offset } = calculateLimitAndOffset(page, size);
-        console.log("limit: " + limit + " offset: " + offset)
-        const productList = await collection.find(query).sort({ "price": "asc" }).skip(offset).limit(limit).toArray();
+        console.log("limit: " + limit + " offset: " + offset+" sort: "+sort)
+        const productList = await collection.find(query).sort(sort).skip(offset).limit(limit).toArray();
         final_answer.data["results"] = productList;
         const meta = paginate(page, productCount, productList, size);
 
