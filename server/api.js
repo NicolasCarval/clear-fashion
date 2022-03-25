@@ -1,9 +1,9 @@
 const cors = require('cors');
 const express = require('express');
 const helmet = require('helmet');
-
+const clientPromise = require('./mongodb-client');
 const { MongoClient } = require('mongodb');
-require('dotenv').config({ path: '../.env' })
+require('dotenv').config()
 const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB_NAME = 'ClearFashionCluster';
 const products = require('./products.json');
@@ -13,8 +13,16 @@ const { calculateLimitAndOffset, paginate } = require('paginate-info')
 
 
 const PORT = 8092;
+var database, collection,client;
 
 const app = express();
+
+const connectionDB = async () => {
+    const client = await MongoClient.connect(MONGODB_URI, { 'useNewUrlParser': true });
+    database = client.db(MONGODB_DB_NAME)
+    collection = database.collection('products')
+}
+
 
 module.exports = app;
 
@@ -24,11 +32,15 @@ app.use(helmet());
 
 app.options('*', cors());
 
-app.get('/', (request, response) => {
-  response.send({'ack': true});
+app.get('/',async (request, response) => {
+    client = await clientPromise;
+    collection = await client.db(MONGODB_DB_NAME).collection("products")
+    response.send({ 'ack': true, 'dbConnection': true, 'dbName': client.db().databaseName });
 });
 
 app.get('/products/search', async (request, response) => {
+    client = await clientPromise;
+    collection = await client.db(MONGODB_DB_NAME).collection("products")
     try {
         let query = {};
         let sort = { "price": "asc"}
@@ -44,7 +56,7 @@ app.get('/products/search', async (request, response) => {
         let size = 12;
         let page = 1;
 
-        if (request.query.brand) {
+        if (request.query.brand && request.query.brand != null) {
             query["brand"] = request.query.brand;
         }
         if (request.query.price && parseInt(request.query.price) > 0) {
@@ -82,14 +94,12 @@ app.get('/products/search', async (request, response) => {
         }
 
         console.log(query)
-        console.log("size: " + size + " page: " + page);
+        console.log("size: " + size + " page: " + page);    
 
         const productCount = await collection.find(query).count();
         final_answer.data.meta["count"] = productCount;
-
-        console.log(productCount + " " + final_answer.data.meta["count"])
+        
         const { limit, offset } = calculateLimitAndOffset(page, size);
-        console.log("limit: " + limit + " offset: " + offset+" sort: "+sort)
         const productList = await collection.find(query).sort(sort).skip(offset).limit(limit).toArray();
         final_answer.data["results"] = productList;
         const meta = paginate(page, productCount, productList, size);
@@ -102,7 +112,7 @@ app.get('/products/search', async (request, response) => {
     }    
 });
 
-app.get('/products/:id', (request, response) => {
+app.get('/products/:id', async (request, response) => {
 
     collection.findOne({ "_id": request.params.id }, (error, result) => {
             if (error) {
@@ -112,8 +122,9 @@ app.get('/products/:id', (request, response) => {
         });
 });
 
-app.get('/brands', (request, response) => {
-
+app.get('/brands', async (request, response) => {
+    client = await clientPromise;
+    collection = await client.db(MONGODB_DB_NAME).collection("products")
     collection.distinct("brand", (error, result) => {
         if (error) {
             return response.status(500).send(error);
@@ -122,7 +133,8 @@ app.get('/brands', (request, response) => {
     });
 });
 
-var database, collection;
+
+
 app.listen(PORT, () => {
     MongoClient.connect(MONGODB_URI, { useNewUrlParser: true }, (error, client) => {
         if (error) {

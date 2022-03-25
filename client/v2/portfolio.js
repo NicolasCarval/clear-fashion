@@ -27,14 +27,14 @@ const span50 = document.querySelector('#P50');
 const span90 = document.querySelector('#P90');
 const span95 = document.querySelector('#P95');
 
-
+const apiProf = "https://clear-fashion-api.vercel.app?page=${page}&size=${size}&brand=${brand}"
 /**
  * Set global value
  * @param {Array} result - products to display
  * @param {Object} meta - pagination meta info
  */
-const setCurrentProducts = ({ result, meta }) => {
-    currentProducts = result;
+const setCurrentProducts = ({ results, meta }) => {
+    currentProducts = results;
     currentPagination = meta;
     console.log(currentPagination);
 };
@@ -48,14 +48,14 @@ const setCurrentProducts = ({ result, meta }) => {
 const fetchProducts = async (page = 1, size = 12, brand = "") => {
     try {
         const response = await fetch(
-            `https://clear-fashion-api.vercel.app?page=${page}&size=${size}&brand=${brand}`
+            `https://serverbis.vercel.app/products/search?page=${page}&size=${size}&brand=${brand}`
         );
         const body = await response.json();
-
         if (body.success !== true) {
             console.error(body);
             return { currentProducts, currentPagination };
         }
+
         return body.data;
     } catch (error) {
         console.error(error);
@@ -70,19 +70,17 @@ const fetchProducts = async (page = 1, size = 12, brand = "") => {
 const fetchBrands = async () => {
     try {
         const response = await fetch(
-            `https://clear-fashion-api.vercel.app/brands`
+            `https://serverbis.vercel.app/brands`
         );
         const body = await response.json();
-
-        if (body.success !== true) {
+        if (body.success == []) {
             console.error(body);
-            return { result: ["loom", "dedicated", "adresse", "1083"] };
+            return { result: ["loom", "dedicated", "adresse"] };
         }
-        console.log("yes")
-        return body.data;
+        return body;
     } catch (error) {
         console.error(error);
-        return { result: ["loom", "dedicated", "adresse", "1083"] };
+        return { result: ["loom", "dedicated", "adresse"] };
     }
 };
 
@@ -110,16 +108,15 @@ const renderProducts = products => {
         }
     }
     products = sortBy(products);
-    console.log(products)
     const fragment = document.createDocumentFragment();
-    if (products.length != 0) {
+    if (products != null && products.length != 0) {
         const div = document.createElement('div');
         div.className = "flex-container"
         const template = products
             .map(product => {
                 return `
 <a href="${product.link}" target="_blank">
-      <div class="product" id=${product.uuid} >
+      <div class="product" id=${product._id} >
         <img src="${product.photo}"  width="303px" onerror="this.src='not_found.png';" alt="not found"/>
         <hr class="solid">        
         <a href="${product.link}" target="_blank"><strong>${product.name}</strong></a>
@@ -132,7 +129,7 @@ const renderProducts = products => {
 <div class='favbtn'>
             <div class="center">
                 <label class="label">
-                    <input  class="label__checkbox" type="checkbox" id="fav${product.uuid}" value="Add" onchange="manageFavourite('${product.uuid}')"/>
+                    <input  class="label__checkbox" type="checkbox" id="fav${product._id}" value="Add" onchange="manageFavourite('${product._id}')"/>
                     <span class="label__text">
                         <span class="label__check">
                             <i class="fa fa-check icon"></i>
@@ -169,11 +166,11 @@ const renderProducts = products => {
  */
 const renderPagination = pagination => {
     const { currentPage, pageCount } = pagination;
+    console.log("pagination:"+pageCount)
     const options = Array.from(
         { 'length': pageCount },
         (value, index) => `<option value="${index + 1}">${index + 1}</option>`
     ).join('');
-
     selectPage.innerHTML = options;
     selectPage.selectedIndex = currentPage - 1;
 };
@@ -187,8 +184,8 @@ const renderIndicators = pagination => {
     spanNbProducts.innerHTML = `<strong>${count}</strong>`;
 
     fetchProducts(1, count, selectBrand.value).then(product => {
-        const productSortedDate = SortProductsDate(product.result);
-        spanDateLatestProduct.innerHTML = `<strong>${productSortedDate[0].released}</strong>`;
+        const productSortedDate = SortProductsDate(product.results);
+        spanDateLatestProduct.innerHTML = `<strong>${productSortedDate[0].date}</strong>`;
 
         const nbRecentlyReleased = CountRecentlyReleased(productSortedDate);
         spanNbNewProducts.innerHTML = `<strong>${nbRecentlyReleased}</strong>`;
@@ -268,9 +265,9 @@ selectRecent.addEventListener('change', event => {
 selectFavourite.addEventListener('click', event => {
 
     if (event.target.checked) {
-        const result = JSON.parse(localStorage.getItem('favourites') || '[]');
+        const results = JSON.parse(localStorage.getItem('favourites') || '[]');
         const meta = Object.assign({}, currentPagination);
-        setCurrentProducts({ result, meta });
+        setCurrentProducts({ results, meta });
         render(currentProducts, currentPagination);
     } else {
         if (selectBrand.value == "") {
@@ -300,9 +297,8 @@ async function RadioOnclick() {
 
 document.addEventListener('DOMContentLoaded', async () => {
 
-    const products = await fetchProducts(currentPagination.currentPage, selectShow.value);
+    const products = await fetchProducts(currentPagination.currentPage, selectShow.value,"");
     fetchBrands().then(BrandSelectOptionCreation);
-
     setCurrentProducts(products);
     render(currentProducts, currentPagination);
 });
@@ -314,7 +310,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 function GetProductsByBrand(brandName, products) {
     let brandProducts = [];
     for (let i = 0; i < products.length; i++) {
-        if (products[i].brand == brandName) {
+        if (products !==null && products[i].brand == brandName) {
             brandProducts.push(products[i]);
         }
     }
@@ -323,8 +319,8 @@ function GetProductsByBrand(brandName, products) {
 
 function SortProductsDate(ProductsList) {
     return ProductsList.slice().sort(function (itemA, itemB) {
-        if (itemA.released > itemB.released) { return -1; }
-        else if (itemA.released < itemB.released) { return 1; }
+        if (itemA.date > itemB.date) { return -1; }
+        else if (itemA.date < itemB.date) { return 1; }
         else { return 0; }
     });
 }
@@ -342,13 +338,13 @@ function CountRecentlyReleased(ProductList) {
     const recentDate = new Date()
     const pastDate = recentDate.getDate() - 14;
     recentDate.setDate(pastDate);
-    while (new Date(ProductList[counter].released) >= recentDate) {
+    while (ProductList[counter]!=null && new Date(ProductList[counter].date) >= recentDate) {
         counter = counter + 1;
     }
     return counter;
 }
 
-function BrandSelectOptionCreation({ result }) {
+function BrandSelectOptionCreation({ result } ) {
     const brands = result
     for (let i = 0; i < brands.length; i++) {
         const el = document.createElement("option");
@@ -415,18 +411,18 @@ function displayPriceRange() {
 function manageFavourite(id) {
     const div = document.querySelector("[id=" + CSS.escape(id) + "]");
     const favourites = JSON.parse(localStorage.getItem('favourites') || '[]');
-    let newFavourite = favourites.find(product => product.uuid == div.id);
+    let newFavourite = favourites.find(product => product._id == div.id);
     if (newFavourite === undefined) {
         div.querySelector(`#fav${id}`).value = "Remove";
-        newFavourite = currentProducts.find(product => product.uuid == div.id);
+        newFavourite = currentProducts.find(product => product._id == div.id);
         favourites.push(newFavourite);
         localStorage.setItem('favourites', JSON.stringify(favourites));
         console.log("push:", localStorage.favourites);
     }
     else {
         div.querySelector(`#fav${id}`).value = "Add";
-        newFavourite = currentProducts.find(product => product.uuid == div.id);
-        const index = favourites.findIndex(product => product.uuid == newFavourite.uuid);
+        newFavourite = currentProducts.find(product => product._id == div.id);
+        const index = favourites.findIndex(product => product._id == newFavourite._id);
         if (index > -1) {
             favourites.splice(index, 1); // 2nd parameter means remove one item only
         }
@@ -440,13 +436,15 @@ function manageFavourite(id) {
 
 function changeValue(products) {
     const favourites = JSON.parse(localStorage.getItem('favourites') || '[]');
-    for (let i = 0; i < products.length; i++) {
-        const div = document.querySelector("[id=" + CSS.escape(products[i].uuid) + "]");
-        const newFavourite = favourites.find(product => product.uuid == div.id);
-        if (newFavourite !== undefined) {
-            div.querySelector("[id=fav" + CSS.escape(products[i].uuid) + "]").checked = true;
+    console.log(localStorage)
+    if (favourites != []) {
+        for (let i = 0; i < products.length; i++) {
+            const div = document.querySelector("[id=" + CSS.escape(products[i]._id) + "]");
+            const newFavourite = favourites.find(product => product._id == div.id);
+            console.log("new fav" + newFavourite)
+            if (newFavourite !== undefined) {
+                div.querySelector("[id=fav" + CSS.escape(products[i]._id) + "]").checked = true;
+            }
         }
-
     }
-
 }
