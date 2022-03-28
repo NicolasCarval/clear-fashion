@@ -86,10 +86,10 @@ app.get('/products/search', async (request, response) => {
                 }
             }
         }
-        if (request.query.size && parseInt(request.query.size) > 0 && parseInt(request.query.size) <= 48) {
+        if (request.query.size && parseInt(request.query.size) > 0) {
             size = parseInt(request.query.size);
         }
-        if (request.query.page && parseInt(request.query.page) > 0 && parseInt(request.query.page) <= 100) {
+        if (request.query.page && parseInt(request.query.page) > 0) {
             page = parseInt(request.query.page);
         }
 
